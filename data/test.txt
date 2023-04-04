@@ -1,0 +1,56 @@
+callat_test.h5:
+	a09m310:
+		delta_pp:
+			 <HDF5 dataset "delta_pp": shape (784, 96, 2, 1), type "<f4">
+		kplus:
+			 <HDF5 dataset "kplus": shape (784, 96, 2, 1), type "<f4">
+		lambda_z:
+			 <HDF5 dataset "lambda_z": shape (784, 96, 2, 1), type "<f4">
+		mp_l:
+			 <HDF5 dataset "mp_l": shape (784, 96), type "<f4">
+		mp_s:
+			 <HDF5 dataset "mp_s": shape (784, 96), type "<f4">
+		omega_m:
+			 <HDF5 dataset "omega_m": shape (784, 96, 2, 1), type "<f4">
+		phi_ss:
+			 <HDF5 dataset "phi_ss": shape (784, 96, 2, 1), type "<f4">
+		piplus:
+			 <HDF5 dataset "piplus": shape (784, 96, 2, 1), type "<f4">
+		pp_l:
+			 <HDF5 dataset "pp_l": shape (784, 96), type "<f4">
+		pp_s:
+			 <HDF5 dataset "pp_s": shape (784, 96), type "<f4">
+		proton:
+			 <HDF5 dataset "proton": shape (784, 96, 2, 1), type "<f4">
+		sigma_p:
+			 <HDF5 dataset "sigma_p": shape (784, 96, 2, 1), type "<f4">
+		sigma_star_p:
+			 <HDF5 dataset "sigma_star_p": shape (784, 96, 2, 1), type "<f4">
+		xi_star_z:
+			 <HDF5 dataset "xi_star_z": shape (784, 96, 2, 1), type "<f4">
+		xi_z:
+			 <HDF5 dataset "xi_z": shape (784, 96, 2, 1), type "<f4">
+	a09m310_new_old:
+		mp_l:
+			 <HDF5 dataset "mp_l": shape (784, 96, 2, 1), type "<c16">
+		piplus:
+			 <HDF5 dataset "piplus": shape (784, 96, 2, 2), type "<c8">
+		pp_l:
+			 <HDF5 dataset "pp_l": shape (784, 96, 2, 1), type "<c16">
+		proton:
+			 <HDF5 dataset "proton": shape (784, 96, 2, 2), type "<c8">
+	a12m310:
+		kaon:
+			 <HDF5 dataset "kaon": shape (1053, 64, 2, 1), type "<c8">
+		mp_ml0p0126:
+			 <HDF5 dataset "mp_ml0p0126": shape (1053, 64), type "<c8">
+		mp_ms0p0693:
+			 <HDF5 dataset "mp_ms0p0693": shape (1053, 64), type "<c16">
+		nucleon:
+			 <HDF5 dataset "nucleon": shape (1053, 64, 2, 1), type "<c8">
+		pion:
+			 <HDF5 dataset "pion": shape (1053, 64, 2, 1), type "<c8">
+		pp_ml0p0126:
+			 <HDF5 dataset "pp_ml0p0126": shape (1053, 64), type "<c8">
+		pp_ms0p0693:
+			 <HDF5 dataset "pp_ms0p0693": shape (1053, 64), type "<c16">
