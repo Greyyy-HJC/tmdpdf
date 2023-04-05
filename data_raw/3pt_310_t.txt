@@ -1,0 +1,171 @@
+a12m130p_tmdpdf_3pt_m310_t.h5:
+	README:
+		 <HDF5 dataset "README": shape (), type "|O">
+	mom_10:
+		tseq_4:
+			Ldir_-1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+			Ldir_1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+		tseq_5:
+			Ldir_-1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+			Ldir_1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+		tseq_6:
+			Ldir_-1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+			Ldir_1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+		tseq_7:
+			Ldir_-1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+			Ldir_1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+		tseq_8:
+			Ldir_-1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+			Ldir_1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+	mom_12:
+		tseq_4:
+			Ldir_-1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+			Ldir_1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+		tseq_5:
+			Ldir_-1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+			Ldir_1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+		tseq_6:
+			Ldir_-1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+			Ldir_1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+		tseq_7:
+			Ldir_-1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+			Ldir_1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+		tseq_8:
+			Ldir_-1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+			Ldir_1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+	mom_8:
+		tseq_4:
+			Ldir_-1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+			Ldir_1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+		tseq_5:
+			Ldir_-1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+			Ldir_1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+		tseq_6:
+			Ldir_-1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+			Ldir_1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+		tseq_7:
+			Ldir_-1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+			Ldir_1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+		tseq_8:
+			Ldir_-1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+			Ldir_1:
+				bdir_-1:
+					 <HDF5 dataset "bdir_-1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">
+				bdir_1:
+					 <HDF5 dataset "bdir_1": shape (1000, 13, 2, 7, 2, 16, 3), type "<f8">

@@ -1,2 +1,3 @@
-data/*.h5
+data_raw/*.h5
 dump/*
+read_from_raw.py

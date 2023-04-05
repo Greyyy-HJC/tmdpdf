@@ -1,7 +1,9 @@
 import numpy as np 
 import gvar as gv  
 import lsqfit as lsf
+import itertools
 
+# this is the module for fitting
 class Fit():
     def __init__(self, prior, pt2_n, pt3_n, include_2pt=True, include_3pt=True):
         self.pt2_n = pt2_n
@@ -10,32 +12,26 @@ class Fit():
         self.include_2pt = include_2pt
         self.include_3pt = include_3pt
         
-        self.prior = prior(self.pt2_n, self.pt3_n)
+        if include_2pt or include_3pt:
+            self.prior = prior(self.pt2_n, self.pt3_n)
 
     def pt2_fit_func(self, pt2_t, p, mom):
-        pt2_n = self.pt2_n
         mo = '_'+str(mom) # to indicate the value of momentum
 
-        E_list = {}
-        for i in range(pt2_n): # initialize       
-            E_list['E'+str(i)] = p['E0'+mo]
-
-        for i in range(1, pt2_n): # define Ei      
-            for j in range(1, i+1):
-                if i == pt2_n-1 and j == i:
-                    E_list['E'+str(i)] += p['dEmax_pt2'+mo]
+        E_list = {'E'+str(i): p['E0'+mo] for i in range(self.pt2_n)} # initialize       
+        for i, Ej in enumerate(range(1, self.pt2_n), start=1): # define Ei      
+            for j in range(1, Ej+1):
+                if Ej == self.pt2_n-1 and j == Ej:
+                    E_list['E'+str(Ej)] += p['dEmax_pt2'+mo]
                 else:
-                    E_list['E'+str(i)] += p['dE'+str(j)+mo]
+                    E_list['E'+str(Ej)] += p['dE'+str(j)+mo]
 
-        val = p['z0'+mo]*p['z0'+mo]*np.exp(-E_list['E0']*pt2_t)
-        
-        if pt2_n == 1:
-            return val
+        val = sum([p['z'+str(i)+mo]*p['z'+str(i)+mo]*np.exp(-E_list['E'+str(i)]*pt2_t) for i in range(self.pt2_n)])
 
-        for i in range(1, pt2_n):
-            val += p['z'+str(i)+mo]*p['z'+str(i)+mo]*np.exp(-E_list['E'+str(i)]*pt2_t)
+        return p['z0'+mo]*p['z0'+mo]*np.exp(-E_list['E0']*pt2_t) if self.pt2_n == 1 else val
 
-        return val
+
+
 
     def pt3_fit_func(self, pt3_t_A3, pt3_tau_A3, pt3_t_V4, pt3_tau_V4, p, mom):
         #!# the momentum at the sink is fixed to zero in all three- point functions.
@@ -43,41 +39,24 @@ class Fit():
         mo = '_'+str(mom) # to indicate the value of momentum
 
         E_list = {}
-        E_list_0 = {}
         for i in range(pt3_n): # initialize       
-            E_list['E'+str(i)] = p['E0'+mo]
-            E_list_0['E'+str(i)] = p['E0_0'] #* for zero momentum
+            E_list['E'+str(i)] = (p['E0'+mo], p['E0_0']) # use tuple to store both E0_momentum and E0_0
 
-        for i in range(1, pt3_n): # define Ei    
-            for j in range(1, i+1):
-                if i == pt3_n-1 and j == i:
-                    if self.pt3_n == self.pt2_n: #* if pt2_n = pt3_n, use same trash can
-                        E_list['E'+str(i)] += p['dEmax_pt2'+mo]
-                        E_list_0['E'+str(i)] += p['dEmax_pt2'+'_0']
-                    else:
-                        E_list['E'+str(i)] += p['dEmax_pt3'+mo]
-                        E_list_0['E'+str(i)] += p['dEmax_pt3'+'_0']
-                else:
-                    E_list['E'+str(i)] += p['dE'+str(j)+mo]
-                    E_list_0['E'+str(i)] += p['dE'+str(j)+'_0']
+        for i, Ej in itertools.product(range(1, pt3_n), repeat=2): # define Ei, E0i
+            if Ej > i:
+                continue
+            if i == pt3_n-1 and Ej == i:
+                key = 'dEmax_pt2' if self.pt3_n == self.pt2_n else 'dEmax_pt3'
+                E_list['E'+str(i)] = tuple(e + p[key+suffix] for e, suffix in zip(E_list['E'+str(i)], (mo, '_0')))
+            else:
+                E_list['E'+str(i)] = tuple(e + p['dE'+str(j)+suffix] for j, e, suffix in \
+                                            zip(range(1, Ej+1), E_list['E'+str(i)], (mo, '_0')))
+
+        val['pt3_A3'] += p['A3_'+mi+ma+mo]*p['z'+str(j)+mo]*p['z'+str(i)+'_0'] * np.exp( - E_list['E'+str(i)]*pt3_tau_A3 - E_list_0['E'+str(j)]*(pt3_t_A3-pt3_tau_A3) ) # exp(-Ei*tau - Ej*(t-tau))
+
+        val['pt3_V4'] += p['V4_'+mi+ma+mo]*p['z'+str(j)+mo]*p['z'+str(i)+'_0'] * np.exp( - E_list['E'+str(i)]*pt3_tau_V4 - E_list_0['E'+str(j)]*(pt3_t_V4-pt3_tau_V4) ) # exp(-Ei*tau - Ej*(t-tau))
 
 
-        val = {}
-        val['pt3_A3'] = 0
-        val['pt3_V4'] = 0
-
-        for i in range(self.pt3_n):    
-            for j in range(self.pt3_n):
-                if mom == 0: 
-                    mi = str(np.minimum(j, i))
-                    ma = str(np.maximum(j, i))
-                else: #!# non-zero mom's A_ij is not symmetric
-                    mi = str(i)
-                    ma = str(j)
-
-                val['pt3_A3'] += p['A3_'+mi+ma+mo]*p['z'+str(j)+mo]*p['z'+str(i)+'_0'] * np.exp( - E_list['E'+str(i)]*pt3_tau_A3 - E_list_0['E'+str(j)]*(pt3_t_A3-pt3_tau_A3) ) # exp(-Ei*tau - Ej*(t-tau))
-
-                val['pt3_V4'] += p['V4_'+mi+ma+mo]*p['z'+str(j)+mo]*p['z'+str(i)+'_0'] * np.exp( - E_list['E'+str(i)]*pt3_tau_V4 - E_list_0['E'+str(j)]*(pt3_t_V4-pt3_tau_V4) ) # exp(-Ei*tau - Ej*(t-tau))
 
         return val
 

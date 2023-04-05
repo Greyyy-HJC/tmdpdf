@@ -1,0 +1,33 @@
+a12m130p_tmdpdf_m220_2pt.h5:
+	README:
+		 <HDF5 dataset "README": shape (), type "|O">
+	hadron_100111515:
+		mom_0:
+			 <HDF5 dataset "mom_0": shape (1000, 16, 3), type "<f8">
+		mom_10:
+			 <HDF5 dataset "mom_10": shape (1000, 16, 3), type "<f8">
+		mom_12:
+			 <HDF5 dataset "mom_12": shape (1000, 16, 3), type "<f8">
+		mom_2:
+			 <HDF5 dataset "mom_2": shape (1000, 16, 3), type "<f8">
+		mom_4:
+			 <HDF5 dataset "mom_4": shape (1000, 16, 3), type "<f8">
+		mom_6:
+			 <HDF5 dataset "mom_6": shape (1000, 16, 3), type "<f8">
+		mom_8:
+			 <HDF5 dataset "mom_8": shape (1000, 16, 3), type "<f8">
+	hadron_121050:
+		mom_0:
+			 <HDF5 dataset "mom_0": shape (1000, 16, 3), type "<f8">
+		mom_10:
+			 <HDF5 dataset "mom_10": shape (1000, 16, 3), type "<f8">
+		mom_12:
+			 <HDF5 dataset "mom_12": shape (1000, 16, 3), type "<f8">
+		mom_2:
+			 <HDF5 dataset "mom_2": shape (1000, 16, 3), type "<f8">
+		mom_4:
+			 <HDF5 dataset "mom_4": shape (1000, 16, 3), type "<f8">
+		mom_6:
+			 <HDF5 dataset "mom_6": shape (1000, 16, 3), type "<f8">
+		mom_8:
+			 <HDF5 dataset "mom_8": shape (1000, 16, 3), type "<f8">

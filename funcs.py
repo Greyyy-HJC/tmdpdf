@@ -17,48 +17,37 @@ ls_p = {"labelsize": 13}
 
 font = {'family' : 'Times New Roman',
 'weight' : 'normal',
-'size'   : 13,
-}
+'size'   : 13}
 
-def bootstrap(conf_ls, times=500):
+
+def bootstrap(conf_ls, times=500, seed_path=None):
     '''
     make sure conf_ls.shape = (N_conf, ...)
     return conf_ls
     '''
 
-    conf_bs = []
-
     #*# If using a fixed bs_ls
-    # bs_ls = gv.load('bs_ls_1000')
-    # for i in range(len(bs_ls)):
-    #     idx_ls = bs_ls[i]
-    #     temp = []
-    #     for idx in idx_ls:
-    #         temp.append(conf_ls[idx])
-
-    #     conf_bs.append( np.average(temp, axis=0) )
-
+    if seed_path is not None:
+        bs_ls = gv.load(seed_path)
+        conf_bs = np.mean(conf_ls[bs_ls], axis=1)
 
     #*# If generating a random bs_ls
-    for i in range(times):
-        idx_ls = np.random.randint(len(conf_ls), size=len(conf_ls)) 
-        temp = []
-        for idx in idx_ls:
-            temp.append(conf_ls[idx])
+    else:
+        idx_ls = np.random.randint(len(conf_ls), size=(times, len(conf_ls)))
+        conf_bs = np.mean(conf_ls[idx_ls], axis=2)
 
-        conf_bs.append( np.average(temp, axis=0) )
+    return conf_bs
 
-    return np.array(conf_bs)
 
 def jackknife(data):
     '''
     make sure data.shape = (N_conf * n_t)
     '''
     nf, nt = data.shape # data shape: (N_conf * n_t)
-    cv = np.mean(data, 0) # average all conf, cv shape: (1 * nt)
-    cv = np.broadcast_to(cv, (nf, nt)) # data shape back to (N_conf* n_t)
-    jac = (nf * cv - data) / nf # drop one data each time then average: (mean[N,:] * N_conf - data[N,:]) / (N_conf-1) 
+    cv = np.mean(data, axis=0, keepdims=True) # average all conf, cv shape: (1 * nt)
+    jac = (nf * cv - data) / (nf - 1) # drop one data each time then average: (mean[N,:] * N_conf - data[N,:]) / (N_conf-1) 
     return jac # jac shape: (n_conf * n_t)
+
 
 def jk_conf_avg(conf_ls):
     N_conf = len(conf_ls)
