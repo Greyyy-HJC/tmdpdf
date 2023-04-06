@@ -3,7 +3,7 @@ import numpy as np
 import gvar as gv
 import lsqfit as lsf
 from fit_module import Fit
-from prior import *
+from prior_setting import *
 from funcs import *
 from plot import *
 

@@ -15,7 +15,7 @@ errorl = {"markersize": 5, "mfc": "none", "capsize": 3, "elinewidth": 1} # circl
 fs_p = {"fontsize": 13} # font size of text, label, ticks
 ls_p = {"labelsize": 13}
 
-font = {'family' : 'Times New Roman',
+font = {#'family' : 'Times New Roman',
 'weight' : 'normal',
 'size'   : 13}
 
@@ -37,6 +37,19 @@ def bootstrap(conf_ls, times=500, seed_path=None):
         conf_bs = np.mean(conf_ls[idx_ls], axis=2)
 
     return conf_bs
+
+
+def bs_ls_to_gvar_ls(bs_ls):
+    '''
+    This function is used to convert the bootstrap list to gvar list by combining each sample with the sdev of all samples
+
+    The shape of bs_ls should be (N_samp, ...)
+    '''
+
+    avg = gv.dataset.avg_data(bs_ls, bstrap=True)
+    sdev = gv.sdev(avg)
+
+    return [gv.gvar(v, sdev) for v in bs_ls]
 
 
 def jackknife(data):
@@ -166,6 +179,22 @@ def errorbar_plot(x, y, yerr, title, ylim=None, save=True):
         plt.savefig('fig/'+title+'.pdf', transparent=True)
     # plt.show()
 
+def errorbar_ls_plot(x_ls, y_ls, yerr_ls, title, ylim=None, save=True):
+    #* this is a general plot function
+
+    fig = plt.figure(figsize=fig_size)
+    ax = plt.axes(plt_axes)
+    for x, y, yerr in zip(x_ls, y_ls, yerr_ls):
+        ax.errorbar(x, y, yerr, **errorb)
+    ax.tick_params(direction='in', top='on', right='on', **ls_p)
+    ax.grid(linestyle=':')
+    ax.set_ylim(ylim)
+    plt.title(title, font)
+    # plt.legend()
+    if save == True:
+        plt.savefig('fig/'+title+'.pdf', transparent=True)
+    # plt.show()
+
 
 def fill_between_plot(x, y, yerr, title, ylim=None, save=True):
     #* this is a general plot function, so put it here
@@ -188,63 +217,5 @@ def pt2_to_meff(pt2_ls):
     for i in range(len(pt2_ls)-1):
         val = np.log(pt2_ls[i]) - np.log(pt2_ls[i+1])
         meff_ls.append(val)
-    return meff_ls
+    return np.array(meff_ls)
 
-def fit_on_data_plot(x, gv_y, fit_res, key, title, log_folder, ylim=None, save=True):
-    #* this is a general plot function to make effective mass plot with fit band on the data
-
-    #* data part
-    mx = x[:-1]
-    gv_my = pt2_to_meff(gv_y)
-    my = [v.mean for v in gv_my]
-    myerr = [v.sdev for v in gv_my]
-
-    #* fit part
-    fit_x = np.linspace(mx[0], mx[-1], 100)
-    input_x = {}
-    input_x[key] = fit_x
-    fit_y = fit_res.fcn(input_x, fit_res.p)[key]
-    fit_mx = []
-    fit_my = []
-    fit_myerr = []
-
-    for i in range(len(fit_x)-1):
-        val = np.log(fit_y[i]) - np.log(fit_y[i+1])
-        val = val / (fit_x[i+1] - fit_x[i])
-        fit_mx.append(fit_x[i])
-        fit_my.append(val.mean)
-        fit_myerr.append(val.sdev)
-
-
-    fig = plt.figure(figsize=fig_size)
-    ax = plt.axes(plt_axes)
-    ax.errorbar(mx, my, myerr, label='data', **errorb)
-    ax.fill_between(fit_mx, [fit_my[i]+fit_myerr[i] for i in range(len(fit_my))], [fit_my[i]-fit_myerr[i] for i in range(len(fit_my))], alpha=0.4, label='fit')
-    ax.tick_params(direction='in', top='on', right='on', **ls_p)
-    ax.grid(linestyle=':')
-    ax.set_ylim(ylim)
-    plt.title(title, font)
-    plt.legend()
-    if save == True:
-        plt.savefig(log_folder+title+'.pdf', transparent=True)
-    # plt.show()
-
-def pt2_pt3_to_R(tsep, tau_ls, pt2_0_ls, pt2_mom_ls, pt3_ls):
-    #!# here pt2 list should be completed one started from tsep=0
-    #!# tau list matches with pt3 list
-
-    ratio1 = np.array( pt3_ls / pt2_0_ls[tsep] )
-
-    #!# different from the formula 19 in the paper, coz we have zero momentum at sink
-    ratio2 = []
-    for tau in tau_ls:
-        val1 = pt2_0_ls[tau] * pt2_0_ls[tsep] * pt2_mom_ls[tsep - tau]
-        val2 = pt2_mom_ls[tau] * pt2_mom_ls[tsep] * pt2_0_ls[tsep - tau]
-
-        ratio2.append( val1 / val2 )
-
-    ratio2 = np.array(ratio2) 
-
-    R_ls = ratio1 * (ratio2**0.5)
-
-    return R_ls

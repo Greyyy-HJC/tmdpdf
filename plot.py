@@ -64,30 +64,103 @@ def meff_plot(pt2_ls, ti, tf, fit_res, mom_ls, mom_plot, title):
     plt.show()
 
 
+def fit_on_data_plot_2pt(x, gv_y, fit_res, key, title, log_folder, ylim=None, save=True):
+    #* this is a general plot function to make effective mass plot with fit band on the data
 
+    #* data part
+    mx = x[:-1]
+    gv_my = pt2_to_meff(gv_y)
+    my = [v.mean for v in gv_my]
+    myerr = [v.sdev for v in gv_my]
 
-def fit_on_data_R(data_set_tidy, mom, current, title, ylim=None):
-    mo = '_' + str(mom)
-    hash_key = 'p_sq_{}_pz_0'.format(mom)
-    pt2_0_ls = data_set_tidy['p_sq_0_pz_0']['2pt']
-    pt2_mom_ls = data_set_tidy[hash_key]['2pt']
+    #* fit part
+    fit_x = np.linspace(mx[0], mx[-1], 100)
+    input_x = {}
+    input_x[key] = fit_x
+    fit_y = fit_res.fcn(input_x, fit_res.p)[key]
+    fit_mx = []
+    fit_my = []
+    fit_myerr = []
+
+    for i in range(len(fit_x)-1):
+        val = np.log(fit_y[i]) - np.log(fit_y[i+1])
+        val = val / (fit_x[i+1] - fit_x[i])
+        fit_mx.append(fit_x[i])
+        fit_my.append(val.mean)
+        fit_myerr.append(val.sdev)
 
 
     fig = plt.figure(figsize=fig_size)
     ax = plt.axes(plt_axes)
-    for tsep in range(3, 10):
-        pt3_ls = data_set_tidy[hash_key][current+'_tsep_{}'.format(tsep)][1:-1]
-        tau_ls = np.arange(tsep+1)[1:-1]
-        R_tsep = pt2_pt3_to_R(tsep, tau_ls, pt2_0_ls, pt2_mom_ls, pt3_ls)
-
-        ax.errorbar(tau_ls - tsep/2, [v.mean for v in R_tsep], [v.sdev for v in R_tsep], color=color_ls[tsep], label='tsep {}'.format(tsep), **errorb)
-
-
-    ax.tick_params(direction='in', **ls_p)
+    ax.errorbar(mx, my, myerr, label='data', **errorb)
+    ax.fill_between(fit_mx, [fit_my[i]+fit_myerr[i] for i in range(len(fit_my))], [fit_my[i]-fit_myerr[i] for i in range(len(fit_my))], alpha=0.4, label='fit')
+    ax.tick_params(direction='in', top='on', right='on', **ls_p)
     ax.grid(linestyle=':')
     ax.set_ylim(ylim)
     plt.title(title, font)
     plt.legend()
+    if save == True:
+        plt.savefig(log_folder+title+'.pdf', transparent=True)
+    # plt.show()
+
+
+
+
+    
+
+def fit_on_data_plot_ratio(x_ls, gv_y_ls, fit_res, re_im, title, log_folder, ylim=None): 
+    #todo
+    '''
+    Still need to work on this!
+    Plot both real and imag
+    better way to get input
+    '''
+
+
+    fig = plt.figure(figsize=fig_size)
+    ax = plt.axes(plt_axes)
+
+    #* data part
+    for x, gv_y, color in zip(x_ls, gv_y_ls, color_ls):
+        ax.errorbar(x, [v.mean for v in gv_y], [v.sdev for v in gv_y], color=color, **errorb)
+
+    #* fit part
+    input_x = {} # as the input to the fcn, so that to get the band of fit results
+    input_x['2pt_re'] = np.arange(3, 10)
+    input_x['2pt_im'] = np.arange(3, 10)
+
+    ra_t = []
+    ra_tau = []
+    for tseq in range(4, 8):
+        for tau in range(1, tseq):
+            ra_t.append(tseq)
+            ra_tau.append(tau)
+
+    input_x['ra_re'] = [ra_t, ra_tau]
+    input_x['ra_im'] = [ra_t, ra_tau]
+
+    temp = fit_res.fcn(input_x, fit_res.p)['ra_'+re_im]
+
+
+    fit_y_ls = []
+    for tseq in range(4, 8):
+        fit_y_ls.append([])
+        for tau in range(1, tseq):
+            fit_y_ls[tseq-4].append(temp[0])
+            temp.pop(0)
+
+    for x, fit_y, color in zip(x_ls, fit_y_ls, color_ls):
+        ax.fill_between(x, [v.mean+v.sdev for v in fit_y], [v.mean-v.sdev for v in fit_y], alpha=0.4, color=color)
+
+
+    ax.tick_params(direction='in', top='on', right='on', **ls_p)
+    ax.grid(linestyle=':')
+
+    plt.title(title, font)
+    plt.legend(ncol=3)
+    plt.ylim(ylim)
+    plt.xlabel(r'$\tau - t/2$', font)
+    plt.ylabel(r'g.s.', font)
+    plt.savefig(log_folder+title+'.pdf', transparent=True)
     plt.show()
 
-    return
