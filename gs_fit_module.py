@@ -77,7 +77,7 @@ class Gs_Fit():
         pdf_re_ls = []
         pdf_im_ls = []
 
-        print('>>> Start bs g.s. fits: \n')
+        print('>>> Start bs g.s. fits of {}: \n'.format(self.fit_id))
         for bs_idx in tqdm( range(10) ):
             #* set the y values of fit
             y = gv.BufferDict()
@@ -112,25 +112,16 @@ class Gs_Fit():
                 print(fit_res.format(100), file=log)
                 log.close()
 
-                #todo add plot
-                x_ls = []
-                gv_y_ls = []
-                for tseq in range(self.ra_tmin, self.ra_tmax):
-                    x_ls.append([])
-                    gv_y_ls.append([])
-                    for tau in range(1+self.tau_cut, tseq - self.tau_cut): #* because the tau in the data dic is from 1 to tseq - 1 without tseq, so tau_cut = 0 means tau from 1 to tseq - 1
-                        x_ls[tseq - self.ra_tmin].append( tau - tseq/2 )
+                #* add plot
+                ra_re_gv = np.array(ra_re)
+                ra_im_gv = np.array(ra_im)
+                title = self.fit_id + '_bs_idx=0'
 
-                        tau_idx = tau - 1 #! this because the tau=0 and tau=tseq in the data dic has already been cut
-
-                        gv_y_ls[tseq - self.ra_tmin].append(data_dic_gv['ra_re_tseq_{}'.format(tseq)][bs_idx, tau_idx])
-
-                fit_on_data_plot_ratio(x_ls, gv_y_ls, fit_res, re_im='re', title='real', log_folder=log_folder, ylim=None)
-                #todo
+                fit_on_data_plot_ratio(ra_t, ra_tau, ra_re_gv, ra_im_gv, fit_res, title, log_folder)
 
 
             p_value_ls.append(fit_res.Q)
-            chi2_ls.append(fit_res.chi2)
+            chi2_ls.append(fit_res.chi2 / fit_res.dof)
             pdf_re_ls.append(fit_res.p['pdf_re'])
             pdf_im_ls.append(fit_res.p['pdf_im'])
 
@@ -227,7 +218,7 @@ if __name__ == '__main__':
 
 
     gs_fit = Gs_Fit(two_state_fit(), fit_id='220z_P8_L6b1z1')
-    gs_fit.para_set(pt2_tmin=3, pt2_tmax=8, ra_tmin=4, ra_tmax=8, tau_cut=0)
+    gs_fit.para_set(pt2_tmin=3, pt2_tmax=10, ra_tmin=4, ra_tmax=8, tau_cut=0)
     p_value_ls, chi2_ls, pdf_re_ls, pdf_im_ls = gs_fit.main(data_dic)
     
 

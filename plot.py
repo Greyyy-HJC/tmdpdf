@@ -108,59 +108,85 @@ def fit_on_data_plot_2pt(x, gv_y, fit_res, key, title, log_folder, ylim=None, sa
 
     
 
-def fit_on_data_plot_ratio(x_ls, gv_y_ls, fit_res, re_im, title, log_folder, ylim=None): 
-    #todo
+def fit_on_data_plot_ratio(ra_t, ra_tau, ra_re_gv, ra_im_gv, fit_res, title, log_folder): 
     '''
-    Still need to work on this!
-    Plot both real and imag
-    better way to get input
+    This function is used to make a plot of the 3pt / 2pt ratio with fit results on the data points
+    Plot both real and imag parts
+    ra_t and ra_tau are just t_ls and tau_ls used for fits, ra_re_gv and ra_im_gv are the y values for fits
     '''
 
+    tmin = min(ra_t)
+    tmax = max(ra_t) + 1
 
-    fig = plt.figure(figsize=fig_size)
-    ax = plt.axes(plt_axes)
-
-    #* data part
-    for x, gv_y, color in zip(x_ls, gv_y_ls, color_ls):
-        ax.errorbar(x, [v.mean for v in gv_y], [v.sdev for v in gv_y], color=color, **errorb)
-
-    #* fit part
-    input_x = {} # as the input to the fcn, so that to get the band of fit results
+    input_x = {}
     input_x['2pt_re'] = np.arange(3, 10)
     input_x['2pt_im'] = np.arange(3, 10)
-
-    ra_t = []
-    ra_tau = []
-    for tseq in range(4, 8):
-        for tau in range(1, tseq):
-            ra_t.append(tseq)
-            ra_tau.append(tau)
-
     input_x['ra_re'] = [ra_t, ra_tau]
     input_x['ra_im'] = [ra_t, ra_tau]
 
-    temp = fit_res.fcn(input_x, fit_res.p)['ra_'+re_im]
+    fit_re_val = fit_res.fcn(input_x, fit_res.p)['ra_re']
+    fit_im_val = fit_res.fcn(input_x, fit_res.p)['ra_im']
+
+    tau_dic = {}
+    ra_re_dic = {}
+    ra_im_dic = {}
+    fit_re_dic = {}
+    fit_im_dic = {}
+
+    for idx in range(len(ra_t)):
+        key = 'tseq_{}'.format(ra_t[idx])
+        if key not in tau_dic:
+            tau_dic[key] = []
+            ra_re_dic[key] = []
+            ra_im_dic[key] = []
+            fit_re_dic[key] = []
+            fit_im_dic[key] = []
+
+        tau_dic[key].append(ra_tau[idx])
+        ra_re_dic[key].append(ra_re_gv[idx])
+        ra_im_dic[key].append(ra_im_gv[idx])
+        fit_re_dic[key].append(fit_re_val[idx])
+        fit_im_dic[key].append(fit_im_val[idx])
 
 
-    fit_y_ls = []
-    for tseq in range(4, 8):
-        fit_y_ls.append([])
-        for tau in range(1, tseq):
-            fit_y_ls[tseq-4].append(temp[0])
-            temp.pop(0)
 
-    for x, fit_y, color in zip(x_ls, fit_y_ls, color_ls):
-        ax.fill_between(x, [v.mean+v.sdev for v in fit_y], [v.mean-v.sdev for v in fit_y], alpha=0.4, color=color)
+    #* plot real part
+    fig = plt.figure(figsize=fig_size)
+    ax = plt.axes(plt_axes)
 
+    for tseq in range(tmin, tmax):
+        key = 'tseq_{}'.format(tseq)
+        ax.errorbar(np.array( tau_dic[key] ) - tseq/2, [v.mean for v in ra_re_dic[key]], [v.sdev for v in ra_re_dic[key]], label='tseq = {}'.format(tseq), color=color_ls[tseq - tmin], **errorb)
+
+        ax.fill_between(np.array( tau_dic[key] ) - tseq/2, [v.mean+v.sdev for v in fit_re_dic[key]], [v.mean-v.sdev for v in fit_re_dic[key]], color=color_ls[tseq - tmin], alpha=0.4)
 
     ax.tick_params(direction='in', top='on', right='on', **ls_p)
     ax.grid(linestyle=':')
 
-    plt.title(title, font)
+    plt.title(title+'_real', font)
     plt.legend(ncol=3)
-    plt.ylim(ylim)
     plt.xlabel(r'$\tau - t/2$', font)
     plt.ylabel(r'g.s.', font)
-    plt.savefig(log_folder+title+'.pdf', transparent=True)
+    plt.savefig(log_folder+title+'_real.pdf', transparent=True)
     plt.show()
 
+
+    #* plot imag part
+    fig = plt.figure(figsize=fig_size)
+    ax = plt.axes(plt_axes)
+
+    for tseq in range(tmin, tmax):
+        key = 'tseq_{}'.format(tseq)
+        ax.errorbar(np.array( tau_dic[key] ) - tseq/2, [v.mean for v in ra_im_dic[key]], [v.sdev for v in ra_im_dic[key]], label='tseq = {}'.format(tseq), color=color_ls[tseq - tmin], **errorb)
+
+        ax.fill_between(np.array( tau_dic[key] ) - tseq/2, [v.mean+v.sdev for v in fit_im_dic[key]], [v.mean-v.sdev for v in fit_im_dic[key]], color=color_ls[tseq - tmin], alpha=0.4)
+
+    ax.tick_params(direction='in', top='on', right='on', **ls_p)
+    ax.grid(linestyle=':')
+
+    plt.title(title+'_imag', font)
+    plt.legend(ncol=3)
+    plt.xlabel(r'$\tau - t/2$', font)
+    plt.ylabel(r'g.s.', font)
+    plt.savefig(log_folder+title+'_imag.pdf', transparent=True)
+    plt.show()
