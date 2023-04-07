@@ -61,11 +61,10 @@ def read_and_fit(loop_paras):
     return
 
 #* parallel processing
-with mp.Pool(processes=4) as pool: # 4 workers
-    gamma = 'z'
-    mass = '220'
+with mp.Pool() as pool: 
+    mass = '310'
     ll = 6
-    loop_paras_ls = [(gamma, mass, mom, ll, b, z) for mom in [8, 10, 12] for b in range(1, 6) for z in range(13)]
+    loop_paras_ls = [(gamma, mass, mom, ll, b, z) for gamma in ['t', 'z'] for mom in [8, 10, 12] for b in range(1, 6) for z in range(13)]
 
     pool.map(read_and_fit, loop_paras_ls)
 
