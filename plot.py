@@ -10,6 +10,8 @@ meff_label = r'$m_{eff}$'
 chi2_label = r'$\chi^2 / d.o.f.$'
 Q_label = r'$Q$'
 
+# plt.rcParams['font.family'] = 'Times New Roman'
+
 
 def meff_plot(pt2_ls, ti, tf, fit_res, title):
     meff_ls = pt2_to_meff(pt2_ls)
@@ -190,7 +192,7 @@ def hist_plot(ls, xlabel, title, xlim=None, save=True):
     ax.tick_params(direction='in', top='on', right='on', **ls_p)
     ax.grid(linestyle=':')
     ax.set_xlabel(xlabel, font)
-    ax.set_ylabel(r'Density', font)
+    ax.set_ylabel('Density', font)
     plt.title(title, font)
     plt.xlim(xlim)
     if save == True:
@@ -217,5 +219,10 @@ if __name__ == '__main__':
     hist_plot(collect_chi2_flat, chi2_label, 'chi2_distribution_hist', xlim=(0, 3), save=True)
 
     # hist_plot(collect_Q_flat, Q_label, 'Q_distribution_hist', xlim=(0, 1), save=True)
+
+# %%
+import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'Times New Roman'#'Arial'
+plt.title('test', font)
 
 # %%

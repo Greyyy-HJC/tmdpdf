@@ -30,8 +30,8 @@ errorl = {"markersize": 5, "mfc": "none", "capsize": 3, "elinewidth": 1} # circl
 fs_p = {"fontsize": 13} # font size of text, label, ticks
 ls_p = {"labelsize": 13}
 
-font = {#'family' : 'Times New Roman',
+font = {'family' : 'Times New Roman',
 'weight' : 'normal',
-'size'   : 13}
+'size'   : 15}
 
 gev_fm = 0.1973269631 # 1 = 0.197 GeV . fm
