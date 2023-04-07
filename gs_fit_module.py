@@ -77,8 +77,8 @@ class Gs_Fit():
         pdf_re_ls = []
         pdf_im_ls = []
 
-        print('>>> Start bs g.s. fits of {}: \n'.format(self.fit_id))
-        for bs_idx in tqdm( range(10) ):
+        print('\n>>> Start bs g.s. fits of {}: \n'.format(self.fit_id))
+        for bs_idx in tqdm( range(N_bs) ):
             #* set the y values of fit
             y = gv.BufferDict()
 
@@ -98,6 +98,11 @@ class Gs_Fit():
 
             fit_res = lsf.nonlinear_fit(data=(x, y), prior=self.prior, fcn=self.get_fcn(), maxit=10000, svdcut=1e-100, fitter='scipy_least_squares')
 
+
+            #todo bad fits warning
+            if fit_res.chi2 / fit_res.dof > 2:
+                print('>>> Warning: bad fit for bs_idx = {} in fit {}'.format(bs_idx, self.fit_id))
+                print('>>> chi2/dof = {}'.format(fit_res.chi2 / fit_res.dof))
 
 
             ### * ### for log
@@ -122,8 +127,8 @@ class Gs_Fit():
 
             p_value_ls.append(fit_res.Q)
             chi2_ls.append(fit_res.chi2 / fit_res.dof)
-            pdf_re_ls.append(fit_res.p['pdf_re'])
-            pdf_im_ls.append(fit_res.p['pdf_im'])
+            pdf_re_ls.append(fit_res.p['pdf_re'].mean) #* only save the mean value of the fit result
+            pdf_im_ls.append(fit_res.p['pdf_im'].mean)
 
             #* save the p value and chi2 for all bs fit results
             log = open(log_folder+"bs_collection.txt", mode="w", encoding="utf-8")

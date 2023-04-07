@@ -1,27 +1,12 @@
 # %%
 import matplotlib.pyplot as plt
 import numpy as np
+from head import *
 from funcs import *
 
-grey = "#808080" 
-red = "#FF6F6F" 
-peach = "#FF9E6F" 
-orange = "#FFBC6F" 
-sunkist = "#FFDF6F"
-yellow = "#FFEE6F"
-lime = "#CBF169"
-green = "#5CD25C" 
-turquoise = "#4AAB89"
-blue = "#508EAD" 
-grape = "#635BB1"
-violet = "#7C5AB8" 
-fuschia = "#C3559F"
-
-color_ls = ['orange','dodgerblue','blueviolet','deeppink','indigo','rosybrown','greenyellow','cyan','fuchsia','royalblue', 'red','green','orange','dodgerblue','blueviolet','deeppink','indigo','rosybrown','greenyellow','cyan','fuchsia','royalblue', 'red','green']
 
 t_label = r'$\rm{t (a) }$'
 meff_label = r'$m_{eff}$'
-gev_fm = 0.1973269631 # 1 = 0.197 GeV . fm
 
 
 def meff_plot(pt2_ls, ti, tf, fit_res, mom_ls, mom_plot, title):
