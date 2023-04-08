@@ -30,7 +30,7 @@ from funcs import *
 class Read_Raw():
     def __init__(self, folder_path):
         self.folder_path = folder_path
-        self.bs_seed_path = self.folder_path + '/bs_ls_800' #todo
+        self.bs_seed_path = self.folder_path + '/bs_ls_800_clean' #todo
 
     def get_pt2_path(self, mass):
         return self.folder_path + '/a12m130p_tmdpdf_m{}_2pt.h5'.format(mass)
@@ -75,6 +75,37 @@ class Read_Raw():
 
         #* return a numpy array with shape (1000 conf, 2 zdir, 16 tau)
         return data_complex
+    
+    def read_ratio(self, gamma, mass, mom, ll, b, z, tseq):
+        # this is used to check
+
+        ratio = self.read_3pt(gamma, mass, mom, ll, b, z, tseq) / self.read_2pt(mass, mom)[:,tseq].reshape(-1,1,1)
+
+
+        #* separate real and imag part then do the zdir average
+        ra_pz_re = np.real( ratio[:,0,:] ) # zdir is postive
+        ra_pz_im = np.imag( ratio[:,0,:] ) # zdir is postive
+        ra_nz_re = np.real( ratio[:,1,:] ) # zdir is negative
+        ra_nz_im = np.imag( ratio[:,1,:] ) # zdir is negative
+
+        if z == 0:
+            if gamma == 't':
+                return ra_pz_re, ra_pz_im
+            elif gamma == 'z':
+                return -ra_nz_im, ra_pz_re #! exchange real and imag part here
+
+
+        if gamma == 't':
+            ra_re = ( ra_pz_re + ra_nz_re ) / 2 
+            ra_im = ( ra_pz_im - ra_nz_im ) / 2 
+
+        elif gamma == 'z': #! exchange real and imag part here
+            ra_im = ( ra_pz_re - ra_nz_re ) / 2
+            ra_re = ( - ra_pz_im - ra_nz_im ) / 2 
+
+        # return a numpy array with shape (1000 conf, 16 tau)
+        return ra_re, ra_im
+    
     
     def read_2pt_bs(self, mass, mom):
         return bootstrap(self.read_2pt(mass, mom), seed_path=self.bs_seed_path)

@@ -155,7 +155,7 @@ def fit_on_data_plot_ratio(ra_t, ra_tau, ra_re_gv, ra_im_gv, fit_res, title, log
     plt.xlabel(r'$\tau - t/2$', font)
     plt.ylabel(r'g.s.', font)
     plt.savefig(log_folder+title+'_real.pdf', transparent=True)
-    plt.show()
+    # plt.show()
 
 
     #* plot imag part
@@ -176,16 +176,20 @@ def fit_on_data_plot_ratio(ra_t, ra_tau, ra_re_gv, ra_im_gv, fit_res, title, log
     plt.xlabel(r'$\tau - t/2$', font)
     plt.ylabel(r'g.s.', font)
     plt.savefig(log_folder+title+'_imag.pdf', transparent=True)
-    plt.show()
+    # plt.show()
 
 '''
 define a function to make a histogram plot of a list of values.
 '''
-def hist_plot(ls, xlabel, title, xlim=None, save=True):
+def hist_plot(ls, xlabel, title, xlim=None, accumulate=False, save=True):
     fig = plt.figure(figsize=fig_size)
     ax = plt.axes(plt_axes)
 
-    ax.hist(ls, bins=40, density=True, rwidth=1, alpha=0.4, edgecolor='black', linewidth=0.5)
+    if accumulate == False:
+        ax.hist(ls, bins=40, density=True, rwidth=1, alpha=0.4, edgecolor='black', linewidth=0.5)
+
+    elif accumulate == True:
+        ax.hist(ls, bins=100, density=True, rwidth=1, alpha=1, edgecolor='orange', linewidth=1, histtype='step', cumulative=True)
 
     ax.tick_params(direction='in', top='on', right='on', **ls_p)
     ax.grid(linestyle=':')
@@ -213,6 +217,16 @@ if __name__ == '__main__':
 
     #* iterate over all files in the folder
     for file in os.listdir('dump/gs_fit'):
+        temp = [x for x in file.split('_')[0:7]]
+        gamma = temp[0][-1]
+        mass = int(temp[0][:-1])
+        mom = int(temp[1][1:])
+        b = int(temp[3][1:])
+        z = int(temp[4][1:])
+        tmax = int(temp[5][4:])
+        tau_cut = int(temp[6][3:])
+
+
         collect_chi2.append(gv.load('dump/gs_fit/'+file)['chi2'])
         collect_Q.append(gv.load('dump/gs_fit/'+file)['Q'])
 
@@ -222,7 +236,11 @@ if __name__ == '__main__':
     
     hist_plot(collect_chi2_flat, chi2_label, 'chi2_distribution_hist', xlim=(0, 3), save=True)
 
-    # hist_plot(collect_Q_flat, Q_label, 'Q_distribution_hist', xlim=(0, 1), save=True)
+    hist_plot(collect_Q_flat, Q_label, 'Q_distribution_hist', xlim=(0, 1), accumulate=True, save=True)
+
+
+# # %%
+# print(len([v for v in collect_Q_flat if v < 0.05]) / len(collect_Q_flat) )
 
 
 # %%

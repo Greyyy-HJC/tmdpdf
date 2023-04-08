@@ -1,2 +1,4 @@
 data_raw/*.h5
 dump/*
+log/gs_fit_old
+read_from_here/*

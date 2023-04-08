@@ -26,6 +26,7 @@ import numpy as np
 import gvar as gv
 import lsqfit as lsf
 import os
+
 from tqdm import tqdm
 
 from prior_setting import two_state_fit
@@ -35,7 +36,7 @@ from plot import *
 class Gs_Fit():
     def __init__(self, prior_dic, fit_id):
         self.prior = prior_dic
-        self.fit_id = fit_id #* the id of the fit, will be used to save the log, should be a string like '220z_P8_L6b1z1'
+        self.fit_id = fit_id #* the id of the fit, will be used to save the log, should be a string like '220z_P8_L6_b1_z1_tmax9_cut0'
 
     def para_set(self, pt2_tmin, pt2_tmax, ra_tmin, ra_tmax, tau_cut=0):
         self.pt2_tmin = pt2_tmin
@@ -77,8 +78,11 @@ class Gs_Fit():
         pdf_re_ls = []
         pdf_im_ls = []
 
-        print('\n>>> Start bs g.s. fits of {}: \n'.format(self.fit_id))
-        for bs_idx in tqdm( range(N_bs) ):
+
+        #* res file path
+        log_folder = 'log/gs_fit/{}/'.format(self.fit_id)
+
+        for bs_idx in range(N_bs):
             #* set the y values of fit
             y = gv.BufferDict()
 
@@ -100,15 +104,13 @@ class Gs_Fit():
 
 
             #todo bad fits warning
-            if fit_res.chi2 / fit_res.dof > 2:
-                print('>>> Warning: bad fit for bs_idx = {} in fit {}'.format(bs_idx, self.fit_id))
-                print('>>> chi2/dof = {}'.format(fit_res.chi2 / fit_res.dof))
+            # if fit_res.Q < 0.05:
+            #     tqdm.write('>>> Warning: bad fit for bs_idx = {} in fit {}'.format(bs_idx, self.fit_id))
+            #     tqdm.write('>>> Q = {}\n'.format(fit_res.Q))
 
 
             ### * ### for log
             if bs_idx == 0:
-                #* res file path
-                log_folder = 'log/gs_fit/{}/'.format(self.fit_id)
                 if not os.path.exists(log_folder):
                     os.mkdir(log_folder)
 
@@ -129,22 +131,21 @@ class Gs_Fit():
             chi2_ls.append(fit_res.chi2 / fit_res.dof)
             pdf_re_ls.append(fit_res.p['pdf_re'].mean) #* only save the mean value of the fit result
             pdf_im_ls.append(fit_res.p['pdf_im'].mean)
+            
 
-            #* save the p value and chi2 for all bs fit results
-            log = open(log_folder+"bs_collection.txt", mode="w", encoding="utf-8")
-            print('\n>>> p values: \n', file=log)
-            print(p_value_ls, file=log)
-            print('\n>>> chi2: \n', file=log)
-            print(chi2_ls, file=log)
-            print('\n>>> real: \n', file=log)
-            print(pdf_re_ls, file=log)
-            print('\n>>> imag: \n', file=log)
-            print(pdf_im_ls, file=log)
-            log.close()
+        #* save the p value and chi2 for all bs fit results
+        log = open(log_folder+"bs_collection.txt", mode="w", encoding="utf-8")
+        print('\n>>> p values: \n', file=log)
+        print(p_value_ls, file=log)
+        print('\n>>> chi2: \n', file=log)
+        print(chi2_ls, file=log)
+        print('\n>>> real: \n', file=log)
+        print(pdf_re_ls, file=log)
+        print('\n>>> imag: \n', file=log)
+        print(pdf_im_ls, file=log)
+        log.close()
 
-            ### * ###
-
-
+        ### * ###
 
         return p_value_ls, chi2_ls, pdf_re_ls, pdf_im_ls
 
@@ -222,7 +223,7 @@ if __name__ == '__main__':
 
 
 
-    gs_fit = Gs_Fit(two_state_fit(), fit_id='220z_P8_L6b1z1')
+    gs_fit = Gs_Fit(two_state_fit(), fit_id='220z_P8_L6_b1_z1_tmax9_cut0')
     gs_fit.para_set(pt2_tmin=3, pt2_tmax=10, ra_tmin=4, ra_tmax=8, tau_cut=0)
     p_value_ls, chi2_ls, pdf_re_ls, pdf_im_ls = gs_fit.main(data_dic)
     
@@ -235,19 +236,16 @@ The standard is P{fits with Q < 0.05} < 5%.
 For now, we used
 tseq = 4, 5, 6, 7, 8
 tau_cut = 0
-within b2_z5 (include)
-
-else used 
-tseq = 4, 5, 6, 7
-tau_cut = 0
+For b < 3 and z < 9 and mom = 8, 10
 
 
 
 
 
-For b < 3 and z < 9
-    mom 8: P = 0.0184
-    mom 10: P = 0.0456
-    mom 12: P = 0.1448
+
+For b < 3 and z < 7 
+    mom 8: P = 0.0135
+    mom 10: P = 0.0485
+    mom 12: P = 0.1521
 
 '''

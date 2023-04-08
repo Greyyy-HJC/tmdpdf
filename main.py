@@ -15,8 +15,9 @@ The main steps are:
 #* do the g.s. fit to all sets, save the log and figures, output the chi2_ls, p_value_ls, pdf_re_ls, pdf_im_ls
 import numpy as np
 import gvar as gv
-import os
 import multiprocessing as mp
+import os
+from tqdm import tqdm
 
 from read_raw_module import Read_Raw
 from gs_fit_module import Gs_Fit
@@ -24,12 +25,16 @@ from prior_setting import two_state_fit
 
 
 def read_and_fit(loop_paras):
+    #! here is the fitting parameter setting
+    ra_tmax = 8
+    tau_cut = 1
+
     gamma, mass, mom, ll, b, z = loop_paras
-    fit_id='{}{}_P{}_L{}_b{}_z{}'.format(mass, gamma, mom, ll, b, z)
+    fit_id='{}{}_P{}_L{}_b{}_z{}_tmax{}_cut{}'.format(mass, gamma, mom, ll, b, z, ra_tmax, tau_cut)
 
     #* if the fit result already exists, skip it
-    # if os.path.exists('dump/gs_fit/{}_Q_chi_re_im'.format(fit_id)):
-    #     return
+    if os.path.exists('dump/gs_fit/{}_Q_chi_re_im'.format(fit_id)):
+        return
 
     read_raw = Read_Raw('data_raw/')
 
@@ -46,7 +51,7 @@ def read_and_fit(loop_paras):
         data_dic['ra_im_tseq_{}'.format(tseq)] = temp_ra_im[:, 1:tseq]
 
     gs_fit = Gs_Fit(two_state_fit(), fit_id)
-    gs_fit.para_set(pt2_tmin=3, pt2_tmax=9, ra_tmin=4, ra_tmax=9, tau_cut=0) #! here is the fitting parameter setting
+    gs_fit.para_set(pt2_tmin=3, pt2_tmax=9, ra_tmin=4, ra_tmax=ra_tmax, tau_cut=tau_cut) #! here is the fitting parameter setting
 
     p_value_ls, chi2_ls, pdf_re_ls, pdf_im_ls = gs_fit.main(data_dic)
 
@@ -61,16 +66,21 @@ def read_and_fit(loop_paras):
     return
 
 #* parallel processing
-with mp.Pool() as pool: 
+with mp.Pool() as pool:
+    import warnings
+
+    # Filter out RuntimeWarning messages
+    warnings.filterwarnings("ignore", category=RuntimeWarning)
+
     ll = 6
-    loop_paras_ls = [(gamma, mass, mom, ll, b, z) for gamma in ['t', 'z'] for mass in [310, 220] for mom in [8, 10, 12] for b in range(1, 3) for z in range(6)]
+    loop_paras_ls = [(gamma, mass, mom, ll, b, z) for gamma in ['t', 'z'] for mass in [310, 220] for mom in [8,10,12] for b in range(1, 6) for z in range(13)]
 
-    pool.map(read_and_fit, loop_paras_ls)
+    # pool.map(read_and_fit, loop_paras_ls)
 
+    # for _ in tqdm(pool.imap_unordered(read_and_fit, loop_paras_ls), total=780):
+        # pass
 
-
-
-
+    results = list(tqdm(pool.imap(read_and_fit, loop_paras_ls), total=len(loop_paras_ls)))
 
 
 # %%
