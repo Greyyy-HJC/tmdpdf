@@ -34,4 +34,8 @@ font = {'family' : 'Times New Roman',
 'weight' : 'normal',
 'size'   : 15}
 
+small_font = {'family' : 'Times New Roman',
+'weight' : 'normal',
+'size'   : 13}
+
 gev_fm = 0.1973269631 # 1 = 0.197 GeV . fm
