@@ -10,8 +10,6 @@ meff_label = r'$m_{eff}$'
 chi2_label = r'$\chi^2 / d.o.f.$'
 Q_label = r'$Q$'
 
-# plt.rcParams['font.family'] = 'Times New Roman'
-
 
 def meff_plot(pt2_ls, ti, tf, fit_res, title):
     meff_ls = pt2_to_meff(pt2_ls)
@@ -204,10 +202,16 @@ if __name__ == '__main__':
     import gvar as gv
     import os
 
-    #* iterate over all files in the folder
+
+
+    '''
+    make the chi2 distribution plot for gs fits
+    '''
+    
     collect_chi2 = []
     collect_Q = []
 
+    #* iterate over all files in the folder
     for file in os.listdir('dump/gs_fit'):
         collect_chi2.append(gv.load('dump/gs_fit/'+file)['chi2'])
         collect_Q.append(gv.load('dump/gs_fit/'+file)['Q'])
@@ -220,9 +224,5 @@ if __name__ == '__main__':
 
     # hist_plot(collect_Q_flat, Q_label, 'Q_distribution_hist', xlim=(0, 1), save=True)
 
-# %%
-import matplotlib.pyplot as plt
-plt.rcParams['font.family'] = 'Times New Roman'#'Arial'
-plt.title('test', font)
 
 # %%

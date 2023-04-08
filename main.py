@@ -68,20 +68,49 @@ with mp.Pool() as pool:
 
     pool.map(read_and_fit, loop_paras_ls)
 
+
+
+
+
+
+
 # %%
+'''
+Select out the bad fits
+'''
+
+# bad_fit_bs_id = {}
+
+# for file in os.listdir('dump/gs_fit'):
+#     temp = [x for x in file.split('_')[0:5]]
+#     b = int(temp[3][1:])
+#     z = int(temp[4][1:])
+
+#     if b < 3 and z < 13:
+#         load = gv.load('dump/gs_fit/'+file)['chi2']
+#         for idx in range(800):
+#             if load[idx] > 2:
+#                 if str(idx) not in bad_fit_bs_id:
+#                     bad_fit_bs_id[str(idx)] = 0
+#                 bad_fit_bs_id[str(idx)] += 1
+
+# print(sum([bad_fit_bs_id[key] for key in bad_fit_bs_id]))
+
+
+# %%
+'''
+check z dependence plot
+'''
 
 # import gvar as gv
 # import numpy as np
 
 # #* read the gs fit result
-# #todo test: plot z dependence at b=1, mom=8
-
-
 # re_ls = []
 # im_ls = []
 
 # for z in range(13):
-#     test = gv.load('dump/gs_fit/220t_P8_L6_b1_z{}_Q_chi_re_im'.format(z))
+#     test = gv.load('dump/gs_fit/310t_P8_L6_b2_z{}_Q_chi_re_im'.format(z))
 
 #     re = gv.dataset.avg_data(test['re'], bstrap=True)
 #     im = gv.dataset.avg_data(test['im'], bstrap=True)
@@ -90,8 +119,8 @@ with mp.Pool() as pool:
 #     im_ls.append(im)
 
 # from funcs import errorbar_plot
-# errorbar_plot(np.arange(13), [v.mean for v in re_ls], [v.sdev for v in re_ls], 'z dependence at b=1, mom=8, real')
+# errorbar_plot(np.arange(13), [v.mean for v in re_ls], [v.sdev for v in re_ls], 'z dependence at b=2, mom=8, real')
 
-# errorbar_plot(np.arange(13), [v.mean for v in im_ls], [v.sdev for v in im_ls], 'z dependence at b=1, mom=8, imag')
+# errorbar_plot(np.arange(13), [v.mean for v in im_ls], [v.sdev for v in im_ls], 'z dependence at b=2, mom=8, imag')
 
 # %%

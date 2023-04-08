@@ -229,3 +229,21 @@ if __name__ == '__main__':
 
 
 # %%
+'''
+Old fit results (totally 624000 fits)
+    bs_800, tseq = 4, 5, 6, 7, tau_cut = 0
+
+chi2 > 2:
+    total: 12617
+    b2_z6(include): 355
+
+chi2 > 1.6:
+    total: 49042
+    b2_z6(include): 1194
+
+    
+New fit results (totally 624000 fits)
+    bs_800
+    within b2_z6: tseq = 4, 5, 6, 7, 8 tau_cut = 0
+
+'''

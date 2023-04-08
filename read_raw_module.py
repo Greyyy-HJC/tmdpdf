@@ -22,7 +22,6 @@ Example usage can be found in the end.
 #! average zdir here, but it should be noted that we need to get ratio and separate real part and imag part first
 #! the real and imag of gamma_z should be exchanged, because i gamma_z corresponds to gamma_t
 
-#todo check the zdir average and real/imag part
 
 #%% 
 import h5py as h5
@@ -31,7 +30,7 @@ from funcs import *
 class Read_Raw():
     def __init__(self, folder_path):
         self.folder_path = folder_path
-        self.bs_seed_path = self.folder_path + '/bs_ls_800'
+        self.bs_seed_path = self.folder_path + '/bs_ls_800' #todo
 
     def get_pt2_path(self, mass):
         return self.folder_path + '/a12m130p_tmdpdf_m{}_2pt.h5'.format(mass)
