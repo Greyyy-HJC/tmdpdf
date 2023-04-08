@@ -27,9 +27,9 @@ def read_and_fit(loop_paras):
     gamma, mass, mom, ll, b, z = loop_paras
     fit_id='{}{}_P{}_L{}_b{}_z{}'.format(mass, gamma, mom, ll, b, z)
 
-    # if the fit result already exists, skip it
-    if os.path.exists('dump/gs_fit/{}_Q_chi_re_im'.format(fit_id)):
-        return
+    #* if the fit result already exists, skip it
+    # if os.path.exists('dump/gs_fit/{}_Q_chi_re_im'.format(fit_id)):
+    #     return
 
     read_raw = Read_Raw('data_raw/')
 
@@ -46,7 +46,7 @@ def read_and_fit(loop_paras):
         data_dic['ra_im_tseq_{}'.format(tseq)] = temp_ra_im[:, 1:tseq]
 
     gs_fit = Gs_Fit(two_state_fit(), fit_id)
-    gs_fit.para_set(pt2_tmin=3, pt2_tmax=10, ra_tmin=4, ra_tmax=8, tau_cut=0)
+    gs_fit.para_set(pt2_tmin=3, pt2_tmax=9, ra_tmin=4, ra_tmax=9, tau_cut=0) #! here is the fitting parameter setting
 
     p_value_ls, chi2_ls, pdf_re_ls, pdf_im_ls = gs_fit.main(data_dic)
 
@@ -62,9 +62,8 @@ def read_and_fit(loop_paras):
 
 #* parallel processing
 with mp.Pool() as pool: 
-    mass = '310'
     ll = 6
-    loop_paras_ls = [(gamma, mass, mom, ll, b, z) for gamma in ['t', 'z'] for mom in [8, 10, 12] for b in range(1, 6) for z in range(13)]
+    loop_paras_ls = [(gamma, mass, mom, ll, b, z) for gamma in ['t', 'z'] for mass in [310, 220] for mom in [8, 10, 12] for b in range(1, 3) for z in range(6)]
 
     pool.map(read_and_fit, loop_paras_ls)
 
@@ -80,21 +79,29 @@ Select out the bad fits
 '''
 
 # bad_fit_bs_id = {}
+# total = 0
 
 # for file in os.listdir('dump/gs_fit'):
 #     temp = [x for x in file.split('_')[0:5]]
+#     gamma = temp[0][-1]
+#     mass = int(temp[0][:-1])
+#     mom = int(temp[1][1:])
 #     b = int(temp[3][1:])
 #     z = int(temp[4][1:])
 
-#     if b < 3 and z < 13:
-#         load = gv.load('dump/gs_fit/'+file)['chi2']
+#     if b < 3 and z < 7:
+#         load = gv.load('dump/gs_fit/'+file)['Q']
 #         for idx in range(800):
-#             if load[idx] > 2:
+#             if load[idx] < 0.05:
 #                 if str(idx) not in bad_fit_bs_id:
 #                     bad_fit_bs_id[str(idx)] = 0
 #                 bad_fit_bs_id[str(idx)] += 1
+#             total += 1
 
-# print(sum([bad_fit_bs_id[key] for key in bad_fit_bs_id]))
+# bad_total = sum([bad_fit_bs_id[key] for key in bad_fit_bs_id])
+
+# print(bad_total/total)
+# print(total)
 
 
 # %%

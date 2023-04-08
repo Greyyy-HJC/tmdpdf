@@ -44,22 +44,30 @@ import gvar as gv
 import os
 
 bad_fit_bs_id = {}
+total = 0
 
 for file in os.listdir('dump/gs_fit'):
     temp = [x for x in file.split('_')[0:5]]
+    gamma = temp[0][-1]
+    mass = int(temp[0][:-1])
+    mom = int(temp[1][1:])
     b = int(temp[3][1:])
     z = int(temp[4][1:])
+    
 
-    if True: #b < 3 and z < 7:
-        load = gv.load('dump/gs_fit/'+file)['chi2']
+    if b < 3 and z < 9 and mom == 8:
+        load = gv.load('dump/gs_fit/'+file)['Q']
         for idx in range(800):
-            if load[idx] > 1.6:
+            if load[idx] < 0.05:
                 if str(idx) not in bad_fit_bs_id:
                     bad_fit_bs_id[str(idx)] = 0
                 bad_fit_bs_id[str(idx)] += 1
+            total += 1
 
-print(sum([bad_fit_bs_id[key] for key in bad_fit_bs_id]))
-print(bad_fit_bs_id)
+bad_total = sum([bad_fit_bs_id[key] for key in bad_fit_bs_id])
+
+print(bad_total/total)
+print(total)
 
 
 # very_bad_fit_bs_id = [] # bad fit with chi2 > 2 for more than 50 times

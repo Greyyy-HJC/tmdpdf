@@ -230,20 +230,24 @@ if __name__ == '__main__':
 
 # %%
 '''
-Old fit results (totally 624000 fits)
-    bs_800, tseq = 4, 5, 6, 7, tau_cut = 0
+The standard is P{fits with Q < 0.05} < 5%.
 
-chi2 > 2:
-    total: 12617
-    b2_z6(include): 355
+For now, we used
+tseq = 4, 5, 6, 7, 8
+tau_cut = 0
+within b2_z5 (include)
 
-chi2 > 1.6:
-    total: 49042
-    b2_z6(include): 1194
+else used 
+tseq = 4, 5, 6, 7
+tau_cut = 0
 
-    
-New fit results (totally 624000 fits)
-    bs_800
-    within b2_z6: tseq = 4, 5, 6, 7, 8 tau_cut = 0
+
+
+
+
+For b < 3 and z < 9
+    mom 8: P = 0.0184
+    mom 10: P = 0.0456
+    mom 12: P = 0.1448
 
 '''
