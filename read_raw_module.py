@@ -152,7 +152,7 @@ if __name__ == "__main__":
 
     m_avg = gv.dataset.avg_data(test_meff, bstrap=True)
 
-    errorbar_ls_plot([np.arange(len(m_avg))], [gv.mean(m_avg)], [gv.sdev(m_avg)], title='meff', save=False)
+    errorbar_ls_plot([np.arange(len(m_avg))], [gv.mean(m_avg)], [gv.sdev(m_avg)], ['meff'], title='meff', save=False)
 
 
     mean_re = []
@@ -174,8 +174,8 @@ if __name__ == "__main__":
 
     x_ls = [np.arange(1, tseq) - tseq/2 for tseq in range(4, 9)]
 
-    errorbar_ls_plot(x_ls, mean_re, sdev_re, title='real', save=False)
+    errorbar_ls_plot(x_ls, mean_re, sdev_re, ['real'], title='real', save=False)
 
-    errorbar_ls_plot(x_ls, mean_im, sdev_im, title='imag', save=False)
+    errorbar_ls_plot(x_ls, mean_im, sdev_im, ['imag'], title='imag', save=False)
 
 # %%

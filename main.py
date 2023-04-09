@@ -12,18 +12,24 @@ The main steps are:
 '''
 
 # %%
-#* do the g.s. fit to all sets, save the log and figures, output the chi2_ls, p_value_ls, pdf_re_ls, pdf_im_ls
 import numpy as np
 import gvar as gv
 import multiprocessing as mp
 import os
 from tqdm import tqdm
 
+from funcs import *
 from read_raw_module import Read_Raw
 from gs_fit_module import Gs_Fit
 from prior_setting import two_state_fit
 
 
+# %%
+#############################################################
+'''
+do the g.s. fit to all sets, save the log and figures, output the chi2_ls, p_value_ls, pdf_re_ls, pdf_im_ls
+'''
+#############################################################
 def read_and_fit(loop_paras):
     #! here is the fitting parameter setting
     ra_tmax = 8
@@ -65,6 +71,8 @@ def read_and_fit(loop_paras):
 
     return
 
+
+
 #* parallel processing
 with mp.Pool() as pool:
     import warnings
@@ -72,74 +80,61 @@ with mp.Pool() as pool:
     # Filter out RuntimeWarning messages
     warnings.filterwarnings("ignore", category=RuntimeWarning)
 
-    ll = 6
-    loop_paras_ls = [(gamma, mass, mom, ll, b, z) for gamma in ['t', 'z'] for mass in [310, 220] for mom in [8,10,12] for b in range(1, 6) for z in range(13)]
+    loop_paras_ls = [(gamma, mass, mom, ll, b, z) for ll in [8, 10] for gamma in ['t'] for mass in [220] for mom in [8] for b in [1,3,5] for z in range(13)]
 
     # pool.map(read_and_fit, loop_paras_ls)
 
-    # for _ in tqdm(pool.imap_unordered(read_and_fit, loop_paras_ls), total=780):
-        # pass
+    # results = list(tqdm(pool.imap(read_and_fit, loop_paras_ls), total=len(loop_paras_ls))) #* use tqdm to show the progress
+#############################################################
+#############################################################
 
-    results = list(tqdm(pool.imap(read_and_fit, loop_paras_ls), total=len(loop_paras_ls)))
 
-
-# %%
-'''
-Select out the bad fits
-'''
-
-# bad_fit_bs_id = {}
-# total = 0
-
-# for file in os.listdir('dump/gs_fit'):
-#     temp = [x for x in file.split('_')[0:5]]
-#     gamma = temp[0][-1]
-#     mass = int(temp[0][:-1])
-#     mom = int(temp[1][1:])
-#     b = int(temp[3][1:])
-#     z = int(temp[4][1:])
-
-#     if b < 3 and z < 7:
-#         load = gv.load('dump/gs_fit/'+file)['Q']
-#         for idx in range(800):
-#             if load[idx] < 0.05:
-#                 if str(idx) not in bad_fit_bs_id:
-#                     bad_fit_bs_id[str(idx)] = 0
-#                 bad_fit_bs_id[str(idx)] += 1
-#             total += 1
-
-# bad_total = sum([bad_fit_bs_id[key] for key in bad_fit_bs_id])
-
-# print(bad_total/total)
-# print(total)
 
 
 # %%
+#############################################################
 '''
-check z dependence plot
+do the renormalization, make z dependence plots
 '''
-
-import gvar as gv
-import numpy as np
+#############################################################
 
 #* read the gs fit result
-re_ls = []
-im_ls = []
+re_dic = {'L6':[], 'L8':[], 'L10':[]}
+im_dic = {'L6':[], 'L8':[], 'L10':[]}
 
 b = 1
+mom = 8
 
-for z in range(13):
-    test = gv.load('dump/gs_fit/220t_P8_L6_b{}_z{}_tmax8_cut1_Q_chi_re_im'.format(b, z))
+for ll in [6, 8, 10]:
+    for z in range(13):
+        temp = gv.load('dump/gs_fit/220t_P{}_L{}_b{}_z{}_tmax8_cut1_Q_chi_re_im'.format(mom, ll, b, z))
 
-    re = gv.dataset.avg_data(test['re'], bstrap=True)
-    im = gv.dataset.avg_data(test['im'], bstrap=True)
+        re = gv.dataset.avg_data(temp['re'], bstrap=True)
+        im = gv.dataset.avg_data(temp['im'], bstrap=True)
 
-    re_ls.append(re)
-    im_ls.append(im)
+        re_dic['L{}'.format(ll)].append(re)
+        im_dic['L{}'.format(ll)].append(im)
 
-from funcs import errorbar_plot
-errorbar_plot(np.arange(13), [v.mean for v in re_ls], [v.sdev for v in re_ls], 'z dependence at b={}, mom=8, real'.format(b))
 
-errorbar_plot(np.arange(13), [v.mean for v in im_ls], [v.sdev for v in im_ls], 'z dependence at b={}, mom=8, imag'.format(b))
+y_ls = [ [v.mean for v in re_dic['L{}'.format(ll)]] for ll in [6, 8, 10] ]
+yerr_ls = [ [v.sdev for v in re_dic['L{}'.format(ll)]] for ll in [6, 8, 10] ]
+label_ls = ['L6', 'L8', 'L10']
+
+errorbar_ls_plot([np.arange(13) for i in range(3)], y_ls, yerr_ls, label_ls, 'z dependence mix L at b={}, mom=8, real'.format(b))
+
+
+y_ls = [ [v.mean for v in im_dic['L{}'.format(ll)]] for ll in [6, 8, 10] ]
+yerr_ls = [ [v.sdev for v in im_dic['L{}'.format(ll)]] for ll in [6, 8, 10] ]
+label_ls = ['L6', 'L8', 'L10']
+
+errorbar_ls_plot([np.arange(13) for i in range(3)], y_ls, yerr_ls, label_ls, 'z dependence mix L at b={}, mom=8, imag'.format(b))
+
+#############################################################
+#############################################################
+
+
+
+
+
 
 # %%

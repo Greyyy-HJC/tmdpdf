@@ -164,18 +164,18 @@ def errorbar_plot(x, y, yerr, title, ylim=None, save=True):
         plt.savefig('fig/'+title+'.pdf', transparent=True)
     # plt.show()
 
-def errorbar_ls_plot(x_ls, y_ls, yerr_ls, title, ylim=None, save=True):
+def errorbar_ls_plot(x_ls, y_ls, yerr_ls, label_ls, title, ylim=None, save=True):
     #* this is a general plot function
 
     fig = plt.figure(figsize=fig_size)
     ax = plt.axes(plt_axes)
-    for x, y, yerr in zip(x_ls, y_ls, yerr_ls):
-        ax.errorbar(x, y, yerr, **errorb)
+    for x, y, yerr, label in zip(x_ls, y_ls, yerr_ls, label_ls):
+        ax.errorbar(x, y, yerr, label=label, **errorb)
     ax.tick_params(direction='in', top='on', right='on', **ls_p)
     ax.grid(linestyle=':')
     ax.set_ylim(ylim)
     plt.title(title, font)
-    # plt.legend()
+    plt.legend()
     if save == True:
         plt.savefig('fig/'+title+'.pdf', transparent=True)
     # plt.show()
