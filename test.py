@@ -193,3 +193,11 @@ z = int(temp[4][1:])
 read_and_fit((gamma, mass, mom, ll, b, z))
 
 # %%
+import gvar as gv
+import numpy as np
+
+test = gv.load('dump/gs_fit_chi2_dic')
+print([key for key in test])
+print(np.shape( test['total']) )
+
+# %%

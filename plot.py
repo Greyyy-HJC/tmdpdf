@@ -203,7 +203,6 @@ def hist_plot(dic, xlabel, title, xlim=None, ylim=None, accumulate=False, save=T
 
         ax.axvline(check, color='red', linestyle='dashed', linewidth=1.5)
         ax.text(check + 0.05, 0.8, '95% percentile: {}={:.2f}'.format(chi2_label, check), color='red', fontname='Times New Roman', fontsize=14)
-
         
         
     elif accumulate == True:
