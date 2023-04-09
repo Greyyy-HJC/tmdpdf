@@ -39,3 +39,13 @@ small_font = {'family' : 'Times New Roman',
 'size'   : 13}
 
 gev_fm = 0.1973269631 # 1 = 0.197 GeV . fm
+
+#* for latex to use Times New Roman
+from matplotlib import rcParams
+config = {
+    "font.family":'serif',
+    "font.size": 12,
+    "mathtext.fontset":'stix',
+    "font.serif": ['Times New Roman'], # simsun字体中文版就是宋体
+}
+rcParams.update(config)

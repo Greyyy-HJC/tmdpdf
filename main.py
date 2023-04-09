@@ -119,25 +119,27 @@ Select out the bad fits
 check z dependence plot
 '''
 
-# import gvar as gv
-# import numpy as np
+import gvar as gv
+import numpy as np
 
-# #* read the gs fit result
-# re_ls = []
-# im_ls = []
+#* read the gs fit result
+re_ls = []
+im_ls = []
 
-# for z in range(13):
-#     test = gv.load('dump/gs_fit/310t_P8_L6_b2_z{}_Q_chi_re_im'.format(z))
+b = 1
 
-#     re = gv.dataset.avg_data(test['re'], bstrap=True)
-#     im = gv.dataset.avg_data(test['im'], bstrap=True)
+for z in range(13):
+    test = gv.load('dump/gs_fit/220t_P8_L6_b{}_z{}_tmax8_cut1_Q_chi_re_im'.format(b, z))
 
-#     re_ls.append(re)
-#     im_ls.append(im)
+    re = gv.dataset.avg_data(test['re'], bstrap=True)
+    im = gv.dataset.avg_data(test['im'], bstrap=True)
 
-# from funcs import errorbar_plot
-# errorbar_plot(np.arange(13), [v.mean for v in re_ls], [v.sdev for v in re_ls], 'z dependence at b=2, mom=8, real')
+    re_ls.append(re)
+    im_ls.append(im)
 
-# errorbar_plot(np.arange(13), [v.mean for v in im_ls], [v.sdev for v in im_ls], 'z dependence at b=2, mom=8, imag')
+from funcs import errorbar_plot
+errorbar_plot(np.arange(13), [v.mean for v in re_ls], [v.sdev for v in re_ls], 'z dependence at b={}, mom=8, real'.format(b))
+
+errorbar_plot(np.arange(13), [v.mean for v in im_ls], [v.sdev for v in im_ls], 'z dependence at b={}, mom=8, imag'.format(b))
 
 # %%

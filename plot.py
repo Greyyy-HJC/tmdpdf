@@ -7,8 +7,8 @@ from funcs import *
 
 t_label = r'$\rm{t (a) }$'
 meff_label = r'$m_{eff}$'
-chi2_label = 'chi2/dof'#r'$\chi^2 / d.o.f.$'
-Q_label = 'Q'
+chi2_label = r'$\chi^2 / d.o.f.$'
+Q_label = r'$Q$'
 
 
 def meff_plot(pt2_ls, ti, tf, fit_res, title):
@@ -186,8 +186,6 @@ def hist_plot(dic, xlabel, title, xlim=None, ylim=None, accumulate=False, save=T
     all = np.concatenate(list(dic.values()))
     all = all.ravel()
 
-    
-
 
     fig = plt.figure(figsize=fig_size)
     ax = plt.axes(plt_axes)
@@ -195,32 +193,34 @@ def hist_plot(dic, xlabel, title, xlim=None, ylim=None, accumulate=False, save=T
     if accumulate == False:
         #* for chi2 plot
 
+        for key in dic:
+            lis = dic[key]
+            ax.hist(lis, bins=150, density=True, rwidth=1, alpha=0.3, label=key)
+
         ax.hist(all, bins=150, density=True, color=blue, rwidth=1, alpha=0.8, edgecolor='black', linewidth=1, label='Total')
 
         check = np.percentile(all, 95)
 
         ax.axvline(check, color='red', linestyle='dashed', linewidth=1.5)
-        ax.text(check + 0.1, 0.8, '95% percentile of chi2/dof: {:.2f}'.format(check), color='red', fontname='Times New Roman', fontsize=14)
+        ax.text(check + 0.05, 0.8, '95% percentile: {}={:.2f}'.format(chi2_label, check), color='red', fontname='Times New Roman', fontsize=14)
 
-        for key in dic:
-            lis = dic[key]
-            ax.hist(lis, bins=150, density=True, rwidth=1, alpha=0.4, label=key)
         
-
-
+        
     elif accumulate == True:
         #* for p value plot
 
-        ax.hist(all, bins=80, color=blue, density=True, rwidth=1, alpha=0.6, edgecolor='black', linewidth=0.5, histtype='bar', cumulative=True, label='Total')
+        for key in dic:
+            lis = dic[key]
+            ax.hist(lis, bins=100, density=True, rwidth=1, alpha=1, histtype='step', cumulative=True, label=key)
+
+            print('>>> {}: {:.2f}%'.format(key, len([v for v in lis if v < 0.05]) / len(lis) * 100))
+
+        ax.hist(all, bins=200, color=blue, density=True, rwidth=1, alpha=1, edgecolor='black', linewidth=1.5, histtype='step', cumulative=True, label='Total')
 
         check = len([v for v in all if v < 0.05]) / len(all)
 
         ax.axvline(0.05, color='red', linestyle='dashed', linewidth=1.5)
         ax.text(0.05 + 0.05, 0.7, 'Proportion of Q < 0.05: {:.2f}%'.format(check*100), color='red', fontname='Times New Roman', fontsize=14)
-
-        for key in dic:
-            lis = dic[key]
-            ax.hist(lis, bins=100, density=True, rwidth=1, alpha=1, histtype='step', cumulative=True, label=key)
 
 
     ax.tick_params(direction='in', top='on', right='on', **ls_p)
@@ -271,14 +271,9 @@ if __name__ == '__main__':
 
 
 
-    hist_plot(collect_chi2, chi2_label, 'chi2_distribution_hist', xlim=(0, 3), ylim=(-0.05, 1.35), save=True)
+    hist_plot(collect_chi2, chi2_label, 'chi2_distribution_hist'.format(chi2_label), xlim=(0, 3.2), ylim=(-0.05, 1.35), save=True)
 
     hist_plot(collect_Q, Q_label, 'Q_distribution_hist', xlim=(0, 1), ylim=(-0.05, 1.05), accumulate=True, save=True)
-
-
-
-
-
 
 
 
