@@ -59,7 +59,7 @@ def read_and_fit(loop_paras):
     gs_fit = Gs_Fit(two_state_fit(), fit_id)
     gs_fit.para_set(pt2_tmin=3, pt2_tmax=9, ra_tmin=4, ra_tmax=ra_tmax, tau_cut=tau_cut) #! here is the fitting parameter setting
 
-    p_value_ls, chi2_ls, pdf_re_ls, pdf_im_ls = gs_fit.main(data_dic)
+    p_value_ls, chi2_ls, pdf_re_ls, pdf_im_ls = gs_fit.main_bs(data_dic)
 
     Q_chi_re_im = {}
     Q_chi_re_im['Q'] = np.array(p_value_ls)

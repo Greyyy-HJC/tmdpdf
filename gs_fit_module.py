@@ -21,6 +21,12 @@ Both the fit results and the plot of the first fit with bs_idx = 0 will be saved
 Example usage can be found in the end.
 '''
 
+'''
+main_bs is the main function to do the fit with the input bootstrap data_dic. (N_bs fits)
+main_gvar is the main function to do the fit with the input gvar data_dic_avg. (1 fit)
+main_gvar will return the fit_res
+'''
+
 # %%
 import numpy as np
 import gvar as gv
@@ -45,7 +51,7 @@ class Gs_Fit():
         self.ra_tmax = ra_tmax
         self.tau_cut = tau_cut
 
-    def main(self, data_dic):
+    def main_bs(self, data_dic):
         N_bs = len(data_dic['2pt_re']) # number of bootstrap samples
 
         #* set the x values of fit
@@ -80,7 +86,7 @@ class Gs_Fit():
 
 
         #* res file path
-        log_folder = 'log/gs_fit/{}/'.format(self.fit_id)
+        log_folder = 'log/gs_fit_bs/{}/'.format(self.fit_id)
 
         for bs_idx in tqdm( range(N_bs) ):
             #* set the y values of fit
@@ -151,6 +157,67 @@ class Gs_Fit():
         return p_value_ls, chi2_ls, pdf_re_ls, pdf_im_ls
 
 
+    def main_gvar(self, data_dic_avg):
+        #* set the x values of fit
+        x = {}
+        
+        # 2pt
+        x['2pt_re'] = np.arange(self.pt2_tmin, self.pt2_tmax)
+        x['2pt_im'] = np.arange(self.pt2_tmin, self.pt2_tmax)
+
+        # ratio
+        ra_t = []
+        ra_tau = []
+        for tseq in range(self.ra_tmin, self.ra_tmax):
+            for tau in range(1+self.tau_cut, tseq - self.tau_cut): #* because the tau in the data dic is from 1 to tseq - 1 without tseq, so tau_cut = 0 means tau from 1 to tseq - 1
+                ra_t.append(tseq)
+                ra_tau.append(tau)
+
+        x['ra_re'] = [ra_t, ra_tau]
+        x['ra_im'] = [ra_t, ra_tau]
+
+        #* set the y values of fit
+        y = gv.BufferDict()
+
+        y['2pt_re'] = data_dic_avg['2pt_re'][self.pt2_tmin:self.pt2_tmax]
+        y['2pt_im'] = data_dic_avg['2pt_im'][self.pt2_tmin:self.pt2_tmax]
+
+        ra_re = []
+        ra_im = []
+        for tseq in range(self.ra_tmin, self.ra_tmax):
+            for tau in range(1+self.tau_cut, tseq - self.tau_cut): #* because the tau in the data dic is from 1 to tseq - 1 without tseq, so tau_cut = 0 means tau from 1 to tseq - 1
+                tau_idx = tau - 1 #! this because the tau=0 and tau=tseq in the data dic has already been cut
+
+                ra_re.append(data_dic_avg['ra_re_tseq_{}'.format(tseq)][tau_idx])
+                ra_im.append(data_dic_avg['ra_im_tseq_{}'.format(tseq)][tau_idx])
+
+        y['ra_re'] = ra_re
+        y['ra_im'] = ra_im
+
+        fit_res = lsf.nonlinear_fit(data=(x, y), prior=self.prior, fcn=self.get_fcn(), maxit=10000, svdcut=1e-100, fitter='scipy_least_squares')
+
+        #* res file path
+        log_folder = 'log/gs_fit_gvar/{}/'.format(self.fit_id)
+        if not os.path.exists(log_folder):
+            os.mkdir(log_folder)
+
+        #* save the first fit result
+        log = open(log_folder+"gvar_fit_log.txt", mode="w", encoding="utf-8")
+        print(fit_res.format(100), file=log)
+        log.close()
+
+        #* add plot
+        ra_re_gv = np.array(ra_re)
+        ra_im_gv = np.array(ra_im)
+        title = self.fit_id + '_gvar'
+
+        fit_on_data_plot_ratio(ra_t, ra_tau, ra_re_gv, ra_im_gv, fit_res, title, log_folder)
+
+
+        return fit_res
+
+
+
     def pt2_re_fcn(self, pt2_t, p):
         #! checked to be consistent with the paper
         de = p['dE1']
@@ -216,8 +283,6 @@ if __name__ == '__main__':
     ll = 6
     b = 3
     z = 8
-    tmax = 8
-    tau_cut = 1
 
     data_dic = {}
     temp_2pt = read_raw.read_2pt_bs(mass, mom)
@@ -231,11 +296,19 @@ if __name__ == '__main__':
         data_dic['ra_re_tseq_{}'.format(tseq)] = temp_ra_re[:, 1:tseq]
         data_dic['ra_im_tseq_{}'.format(tseq)] = temp_ra_im[:, 1:tseq]
 
-
-
+    
+    tmax = 8
+    tau_cut = 1
     gs_fit = Gs_Fit(two_state_fit(), fit_id='{}{}_P{}_L{}_b{}_z{}_tmax{}_cut{}'.format(mass, gamma, mom, ll, b, z, tmax, tau_cut))
     gs_fit.para_set(pt2_tmin=3, pt2_tmax=9, ra_tmin=4, ra_tmax=tmax, tau_cut=tau_cut)
-    p_value_ls, chi2_ls, pdf_re_ls, pdf_im_ls = gs_fit.main(data_dic)
+
+    #! do the bs fits
+    # p_value_ls, chi2_ls, pdf_re_ls, pdf_im_ls = gs_fit.main_bs(data_dic)
+
+    #! do the gvar fits
+    data_dic_avg = gv.dataset.avg_data(data_dic, bstrap=True)
+    fit_res = gs_fit.main_gvar(data_dic_avg)
+    print(fit_res.format(100))
     
 
 
