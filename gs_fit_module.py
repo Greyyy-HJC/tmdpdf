@@ -82,11 +82,12 @@ class Gs_Fit():
         #* res file path
         log_folder = 'log/gs_fit/{}/'.format(self.fit_id)
 
-        for bs_idx in range(N_bs):
+        for bs_idx in tqdm( range(N_bs) ):
             #* set the y values of fit
             y = gv.BufferDict()
 
             y['2pt_re'] = data_dic_gv['2pt_re'][bs_idx, self.pt2_tmin:self.pt2_tmax]
+            y['2pt_im'] = data_dic_gv['2pt_im'][bs_idx, self.pt2_tmin:self.pt2_tmax]
 
             ra_re = []
             ra_im = []
@@ -104,9 +105,9 @@ class Gs_Fit():
 
 
             #todo bad fits warning
-            # if fit_res.Q < 0.05:
-            #     tqdm.write('>>> Warning: bad fit for bs_idx = {} in fit {}'.format(bs_idx, self.fit_id))
-            #     tqdm.write('>>> Q = {}\n'.format(fit_res.Q))
+            if fit_res.Q < 0.05:
+                tqdm.write('>>> Warning: bad fit for bs_idx = {} in fit {}'.format(bs_idx, self.fit_id))
+                tqdm.write('>>> Q = {}\n'.format(fit_res.Q))
 
 
             ### * ### for log
@@ -209,22 +210,31 @@ if __name__ == '__main__':
 
     read_raw = Read_Raw('data_raw/')
 
+    gamma = 't'
+    mass = 220
+    mom = 8
+    ll = 6
+    b = 3
+    z = 8
+    tmax = 8
+    tau_cut = 1
+
     data_dic = {}
-    temp_2pt = read_raw.read_2pt_bs(mass=220, mom=8)
+    temp_2pt = read_raw.read_2pt_bs(mass, mom)
     data_dic['2pt_re'] = np.real( temp_2pt )
     data_dic['2pt_im'] = np.imag( temp_2pt )
 
 
-    for tseq in range(4, 8):
-        temp_ra_re, temp_ra_im = read_raw.read_ratio_bs(gamma='z', mass=220, mom=8, ll=6, b=1, z=1, tseq=tseq)
+    for tseq in range(4, 9):
+        temp_ra_re, temp_ra_im = read_raw.read_ratio_bs(gamma, mass, mom, ll, b, z, tseq=tseq)
 
         data_dic['ra_re_tseq_{}'.format(tseq)] = temp_ra_re[:, 1:tseq]
         data_dic['ra_im_tseq_{}'.format(tseq)] = temp_ra_im[:, 1:tseq]
 
 
 
-    gs_fit = Gs_Fit(two_state_fit(), fit_id='220z_P8_L6_b1_z1_tmax9_cut0')
-    gs_fit.para_set(pt2_tmin=3, pt2_tmax=10, ra_tmin=4, ra_tmax=8, tau_cut=0)
+    gs_fit = Gs_Fit(two_state_fit(), fit_id='{}{}_P{}_L{}_b{}_z{}_tmax{}_cut{}'.format(mass, gamma, mom, ll, b, z, tmax, tau_cut))
+    gs_fit.para_set(pt2_tmin=3, pt2_tmax=9, ra_tmin=4, ra_tmax=tmax, tau_cut=tau_cut)
     p_value_ls, chi2_ls, pdf_re_ls, pdf_im_ls = gs_fit.main(data_dic)
     
 

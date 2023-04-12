@@ -5,6 +5,31 @@ import matplotlib.pyplot as plt
 from head import *
 
 
+def lat_unit_convert(val, a, Ls, dimension):
+    '''
+    convert lattice unit to GeV / fm
+    dimension: 'M', 'T'
+    a is the lattice spacing
+    Ls is the lattice size in space direction
+    '''
+    if dimension == 'P':
+        #! m * (2pi * 0.197 / Ls / a)
+        return val * 2 * np.pi * gev_fm / Ls / a # return in GeV
+    
+    elif dimension == 'M':
+        return val / a * gev_fm # return in GeV
+    
+    else:
+        print('dimension not recognized')
+        return None
+
+def pt2_to_meff(pt2_ls):
+    meff_ls = []
+    for i in range(len(pt2_ls)-1):
+        val = np.log(pt2_ls[i]) - np.log(pt2_ls[i+1])
+        meff_ls.append(val)
+    return np.array(meff_ls)
+
 def bootstrap(conf_ls, times=500, seed_path=None):
     '''
     make sure conf_ls.shape = (N_conf, ...)
@@ -196,11 +221,51 @@ def fill_between_plot(x, y, yerr, title, ylim=None, save=True):
         plt.savefig('fig/'+title+'.pdf', transparent=True)
     # plt.show()
 
+def stability_plot(x_ls, gv_y_ls, Q_ls, logGBF_ls, title, chose_idx, save=True):
+    '''
+    This is a general stability plot function, with three subplots: matrix elements, Q, logGBF.
+    The input should be x list, gvar y list, Q list, logGBF list, chose_idx.
+    chose_idx is the index in the x list, which indicates the fit that you choose to use.
+    '''
 
-def pt2_to_meff(pt2_ls):
-    meff_ls = []
-    for i in range(len(pt2_ls)-1):
-        val = np.log(pt2_ls[i]) - np.log(pt2_ls[i+1])
-        meff_ls.append(val)
-    return np.array(meff_ls)
+
+    #* Define the height ratios for each subplot
+    heights = [3, 1, 1]
+
+    #* Create the subplots and set the height ratios
+    fig, axs = plt.subplots(3, 1, sharex=True, figsize=fig_size, gridspec_kw={'height_ratios': heights})
+
+    #* Plot the data on each subplot
+    axs[0].errorbar(x_ls, [v.mean for v in gv_y_ls], [v.sdev for v in gv_y_ls], **errorb)
+
+    #* Plot the chosen fit
+    upper = gv_y_ls[chose_idx].mean + gv_y_ls[chose_idx].sdev
+    lower = gv_y_ls[chose_idx].mean - gv_y_ls[chose_idx].sdev
+
+    axs[0].fill_between(x_ls, np.ones_like(x_ls) * upper, np.ones_like(x_ls) * lower, color=grey, alpha=0.4)
+
+    axs[1].scatter(x_ls, Q_ls, marker='X', facecolors='none', edgecolors='k', s=20)
+    axs[1].plot(x_ls, 0.1 * np.ones_like(x_ls), 'r--', linewidth=1)
+    axs[2].scatter(x_ls, logGBF_ls, marker='o', facecolors='none', edgecolors='k', s=20)
+
+
+    # Add labels to the x- and y-axes
+    # axs[0].set_ylabel(r'$\Delta_{GMO}$', font)
+    axs[1].set_ylabel(r'$Q$', font)
+    axs[2].set_ylabel(r'$logGBF$')
+
+    for i in range(3):
+        axs[i].tick_params(direction='in', top='on', right='on', **ls_p)
+        axs[i].grid(linestyle=':')
+
+    plt.subplots_adjust(hspace=0)
+    axs[0].set_title(title, font)
+
+    if save == True:
+        plt.savefig('fig/'+title+'.pdf', transparent=True)
+    # Display the plot
+    plt.show()
+
+
+
 

@@ -80,7 +80,7 @@ with mp.Pool() as pool:
     # Filter out RuntimeWarning messages
     warnings.filterwarnings("ignore", category=RuntimeWarning)
 
-    loop_paras_ls = [(gamma, mass, mom, ll, b, z) for ll in [8, 10] for gamma in ['t'] for mass in [220] for mom in [8] for b in [1,3,5] for z in range(13)]
+    loop_paras_ls = [(gamma, mass, mom, ll, b, z) for ll in [6] for gamma in ['t', 'z'] for mass in [220, 310] for mom in [8, 10, 12] for b in range(1, 6) for z in range(13)]
 
     # pool.map(read_and_fit, loop_paras_ls)
 

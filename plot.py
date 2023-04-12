@@ -248,19 +248,20 @@ if __name__ == '__main__':
     collect_Q = {'220t':[],'220z':[],'310t':[],'310z':[]}
 
     #* iterate over all files in the folder
-    for file in os.listdir('dump/gs_fit'):
+    for file in os.listdir('read_from_here/gs_fit'):
         temp = [x for x in file.split('_')[0:7]]
         gamma = temp[0][-1]
         mass = int(temp[0][:-1])
         mom = int(temp[1][1:])
+        ll = int(temp[2][1:])
         b = int(temp[3][1:])
         z = int(temp[4][1:])
         tmax = int(temp[5][4:])
         tau_cut = int(temp[6][3:])
 
-        if tmax == 8 and tau_cut == 1:
-            collect_chi2['{}{}'.format(mass, gamma)].append(gv.load('dump/gs_fit/'+file)['chi2'])
-            collect_Q['{}{}'.format(mass, gamma)].append(gv.load('dump/gs_fit/'+file)['Q'])
+        if tmax == 8 and tau_cut == 1 and ll == 6:
+            collect_chi2['{}{}'.format(mass, gamma)].append(gv.load('read_from_here/gs_fit/'+file)['chi2'])
+            collect_Q['{}{}'.format(mass, gamma)].append(gv.load('read_from_here/gs_fit/'+file)['Q'])
 
 
     # flatten the list
