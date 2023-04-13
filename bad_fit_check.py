@@ -68,33 +68,33 @@ for file in os.listdir(src_path):
 '''
 make sure the fits in the read_from_here folder are good
 '''
-import gvar as gv
+# import gvar as gv
 
-bad_fit_bs_id = {}
-total = 0
+# bad_fit_bs_id = {}
+# total = 0
 
-for file in os.listdir('read_from_here/gs_fit'):
-    temp = [x for x in file.split('_')[0:7]]
-    gamma = temp[0][-1]
-    mass = int(temp[0][:-1])
-    mom = int(temp[1][1:])
-    b = int(temp[3][1:])
-    z = int(temp[4][1:])
-    tmax = int(temp[5][4:])
-    tau_cut = int(temp[6][3:])
+# for file in os.listdir('read_from_here/gs_fit'):
+#     temp = [x for x in file.split('_')[0:7]]
+#     gamma = temp[0][-1]
+#     mass = int(temp[0][:-1])
+#     mom = int(temp[1][1:])
+#     b = int(temp[3][1:])
+#     z = int(temp[4][1:])
+#     tmax = int(temp[5][4:])
+#     tau_cut = int(temp[6][3:])
     
 
-    if True:
-        load = gv.load('read_from_here/gs_fit/'+file)['Q']
-        for idx in range(800):
-            if load[idx] < 0.05:
-                if str(idx) not in bad_fit_bs_id:
-                    bad_fit_bs_id[str(idx)] = 0
-                bad_fit_bs_id[str(idx)] += 1
-            total += 1
+#     if True:
+#         load = gv.load('read_from_here/gs_fit/'+file)['Q']
+#         for idx in range(800):
+#             if load[idx] < 0.05:
+#                 if str(idx) not in bad_fit_bs_id:
+#                     bad_fit_bs_id[str(idx)] = 0
+#                 bad_fit_bs_id[str(idx)] += 1
+#             total += 1
 
-bad_total = sum([bad_fit_bs_id[key] for key in bad_fit_bs_id])
+# bad_total = sum([bad_fit_bs_id[key] for key in bad_fit_bs_id])
 
-print(bad_total/total)
-print(total)
+# print(bad_total/total)
+# print(total)
 # %%

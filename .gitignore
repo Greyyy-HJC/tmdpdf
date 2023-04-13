@@ -1,7 +1,5 @@
 data_raw/*.h5
-dump/gs_fit_gvar/*
-dump/gs_fit_bs/*
-read_from_here/*
 *.slurm
 *.err
 *.out
+temp/*
