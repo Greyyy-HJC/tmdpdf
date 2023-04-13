@@ -192,12 +192,31 @@ z = int(temp[4][1:])
 
 read_and_fit((gamma, mass, mom, ll, b, z))
 
-# %%
-import gvar as gv
-import numpy as np
 
-test = gv.load('dump/gs_fit_bs_chi2_dic')
-print([key for key in test])
-print(np.shape( test['total']) )
+# %%
+'''
+check correlation
+'''
+
+import gvar as gv
+
+test = gv.load('read_from_here/all_after_gs_fit')
+dic = {}
+lis = []
+
+for key in test:
+    temp = [x for x in key.split('_')]
+    gamma = temp[0][-1]
+    mass = int(temp[0][:-1])
+    mom = int(temp[1][1:])
+    ll = int(temp[2][1:])
+    b = int(temp[3][1:])
+    z = int(temp[4][1:])
+
+    if gamma == 'z' and mass == 220 and mom == 10 and ll == 6 and b == 3:
+        dic[key] = test[key]['re']
+        lis.append(test[key]['re'])
+
+print(gv.evalcov(lis))
 
 # %%

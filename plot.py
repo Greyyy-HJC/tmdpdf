@@ -197,7 +197,7 @@ def hist_plot(dic, xlabel, title, xlim=None, ylim=None, accumulate=False, save=T
             lis = dic[key]
             ax.hist(lis, bins=150, density=True, rwidth=1, alpha=0.3, label=key)
 
-        ax.hist(all, bins=150, density=True, color=blue, rwidth=1, alpha=0.8, edgecolor='black', linewidth=1, label='Total')
+        ax.hist(all, bins=200, density=True, color=blue, rwidth=1, alpha=0.8, edgecolor='black', linewidth=1, label='Total')
 
         check = np.percentile(all, 95)
 
@@ -306,27 +306,44 @@ if __name__ == '__main__':
 
 
     '''
-    make the chi2 distribution plot for gs fits
+    make the chi2 distribution plot for bs gs fits
     '''
     
     collect_chi2 = {'220t':[],'220z':[],'310t':[],'310z':[]}
     collect_Q = {'220t':[],'220z':[],'310t':[],'310z':[]}
 
-    #* iterate over all files in the folder
-    for file in os.listdir('read_from_here/gs_fit'):
-        temp = [x for x in file.split('_')[0:7]]
+
+    #! bs fits
+    # #* iterate over all files in the folder
+    # for file in os.listdir('dump/gs_fit_bs'):
+    #     temp = [x for x in file.split('_')[0:7]]
+    #     gamma = temp[0][-1]
+    #     mass = int(temp[0][:-1])
+    #     mom = int(temp[1][1:])
+    #     ll = int(temp[2][1:])
+    #     b = int(temp[3][1:])
+    #     z = int(temp[4][1:])
+    #     tmax = int(temp[5][4:])
+    #     tau_cut = int(temp[6][3:])
+
+    #     if tmax == 8 and tau_cut == 1 and ll == 6:
+    #         collect_chi2['{}{}'.format(mass, gamma)].append(gv.load('dump/gs_fit_bs/'+file)['chi2'])
+    #         collect_Q['{}{}'.format(mass, gamma)].append(gv.load('dump/gs_fit_bs/'+file)['Q'])
+
+
+    #! gvar fits
+    load = gv.load('read_from_here/all_after_gs_fit')
+    for key in load.keys():
+        temp = [x for x in key.split('_')]
         gamma = temp[0][-1]
         mass = int(temp[0][:-1])
         mom = int(temp[1][1:])
         ll = int(temp[2][1:])
         b = int(temp[3][1:])
         z = int(temp[4][1:])
-        tmax = int(temp[5][4:])
-        tau_cut = int(temp[6][3:])
 
-        if tmax == 8 and tau_cut == 1 and ll == 6:
-            collect_chi2['{}{}'.format(mass, gamma)].append(gv.load('read_from_here/gs_fit/'+file)['chi2'])
-            collect_Q['{}{}'.format(mass, gamma)].append(gv.load('read_from_here/gs_fit/'+file)['Q'])
+        collect_chi2['{}{}'.format(mass, gamma)].append( load[key]['chi2'] )
+        collect_Q['{}{}'.format(mass, gamma)].append( load[key]['Q'] )
 
 
     # flatten the list
@@ -336,7 +353,7 @@ if __name__ == '__main__':
 
 
 
-    hist_plot(collect_chi2, chi2_label, 'chi2_distribution_hist'.format(chi2_label), xlim=(0, 3.2), ylim=(-0.05, 1.35), save=True)
+    hist_plot(collect_chi2, chi2_label, 'chi2_distribution_hist'.format(chi2_label), xlim=(0.2, 1.5), ylim=(-0.05, 5), save=True)
 
     hist_plot(collect_Q, Q_label, 'Q_distribution_hist', xlim=(0, 1), ylim=(-0.05, 1.05), accumulate=True, save=True)
 
