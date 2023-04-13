@@ -1,4 +1,4 @@
-'''
+''' #todo re-edit to fit in the new framework
 This is the module to do the ground state fit with bootstrap data.
 
 The input will be the prior setting dict.
@@ -196,6 +196,11 @@ class Gs_Fit():
 
         fit_res = lsf.nonlinear_fit(data=(x, y), prior=self.prior, fcn=self.get_fcn(), maxit=10000, svdcut=1e-100, fitter='scipy_least_squares')
 
+        #todo bad fits warning
+        if fit_res.Q < 0.05:
+            tqdm.write('>>> Warning: bad fit for fit {}'.format(self.fit_id))
+            tqdm.write('>>> Q = {}\n'.format(fit_res.Q))
+
         #* res file path
         log_folder = 'log/gs_fit_gvar/{}/'.format(self.fit_id)
         if not os.path.exists(log_folder):
@@ -272,6 +277,137 @@ class Gs_Fit():
             return val
         return fcn
 
+
+
+
+def read_and_fit_bs(loop_paras):
+    from read_raw_module import Read_Raw
+
+    #! here is the fitting parameter setting
+    ra_tmax = 8
+    tau_cut = 1
+
+    gamma, mass, mom, ll, b, z = loop_paras
+    fit_id='{}{}_P{}_L{}_b{}_z{}_tmax{}_cut{}'.format(mass, gamma, mom, ll, b, z, ra_tmax, tau_cut)
+
+    #* if the fit result already exists, skip it
+    if os.path.exists('dump/gs_fit_bs/{}_Q_chi_re_im'.format(fit_id)):
+        return
+
+    read_raw = Read_Raw('data_raw/')
+
+    data_dic = {}
+    temp_2pt = read_raw.read_2pt_bs(mass, mom)
+    data_dic['2pt_re'] = np.real( temp_2pt )
+    data_dic['2pt_im'] = np.imag( temp_2pt )
+
+
+    for tseq in range(4, 9): # this tseq range comes from the raw data
+        temp_ra_re, temp_ra_im = read_raw.read_ratio_bs(gamma, mass, mom, ll, b, z, tseq=tseq)
+
+        data_dic['ra_re_tseq_{}'.format(tseq)] = temp_ra_re[:, 1:tseq]
+        data_dic['ra_im_tseq_{}'.format(tseq)] = temp_ra_im[:, 1:tseq]
+
+    gs_fit = Gs_Fit(two_state_fit(), fit_id)
+    gs_fit.para_set(pt2_tmin=3, pt2_tmax=9, ra_tmin=4, ra_tmax=ra_tmax, tau_cut=tau_cut) #! here is the fitting parameter setting
+
+    p_value_ls, chi2_ls, pdf_re_ls, pdf_im_ls = gs_fit.main_bs(data_dic)
+
+    Q_chi_re_im = {}
+    Q_chi_re_im['Q'] = np.array(p_value_ls)
+    Q_chi_re_im['chi2'] = np.array(chi2_ls)
+    Q_chi_re_im['re'] = np.array(pdf_re_ls)
+    Q_chi_re_im['im'] = np.array(pdf_im_ls)
+
+    gv.dump(Q_chi_re_im, 'dump/gs_fit_bs/{}_Q_chi_re_im'.format(fit_id))
+
+    return
+
+
+def read_and_fit_gvar():
+    from read_raw_module import Read_Raw
+    from tqdm.auto import trange
+
+    #! here is the fitting parameter setting
+    ra_tmax = 9
+    tau_cut = 1
+
+    read_raw = Read_Raw('data_raw/')
+    data_dic = {}
+
+    #* read all the data
+    print('\n>>> start reading all the data:')
+    for mass in tqdm([220, 310], desc='mass loop'):
+        for gamma in tqdm(['z', 't'], desc='gamma loop'):
+            for mom in tqdm([8, 10, 12], desc='mom loop'):
+                temp_2pt = read_raw.read_2pt_bs(mass, mom)
+                data_dic['{}{}_P{}_2pt_re'.format(mass, gamma, mom)] = np.real( temp_2pt )
+                data_dic['{}{}_P{}_2pt_im'.format(mass, gamma, mom)] = np.imag( temp_2pt )
+                
+                ll = 6
+                for b in trange(1, 6, desc='b loop', leave=False):
+                    for z in trange(13, desc='z loop', leave=False):
+                        for tseq in range(4, 9):
+                            set_id='{}{}_P{}_L{}_b{}_z{}_tseq{}'.format(mass, gamma, mom, ll, b, z, tseq)
+
+                            temp_ra_re, temp_ra_im = read_raw.read_ratio_bs(gamma, mass, mom, ll, b, z, tseq)
+                            data_dic[set_id+'_ra_re'] = temp_ra_re[:, 1:tseq]
+                            data_dic[set_id+'_ra_im'] = temp_ra_im[:, 1:tseq]
+
+    data_dic_avg = gv.dataset.avg_data(data_dic, bstrap=True)
+    print( '\n>>> global average done. totally {} sets.'.format( (len(data_dic_avg) - 24)/5 ) ) #* should be 780
+
+    gv.dump(data_dic_avg, 'dump/gs_fit_gvar/all_data_dic_avg')
+    print('\n >>> all data_dic_avg dumped.')
+
+
+
+    #* do the fit for each set
+    print('\n>>> start fitting each set:')
+
+    after_gs_fit = {}
+    for mass in tqdm([220, 310], desc='mass loop'):
+        for gamma in tqdm(['z', 't'], desc='gamma loop'):
+            for mom in tqdm([8, 10, 12], desc='mom loop'):
+                ll = 6
+                for b in trange(1, 6, desc='b loop', leave=False):
+                    for z in trange(13, desc='z loop', leave=False):
+                        collect = {}
+
+                        #* construct the sub_data_dic_avg for each set
+                        sub_data_dic_avg = {}
+                        sub_data_dic_avg['2pt_re'] = data_dic_avg['{}{}_P{}_2pt_re'.format(mass, gamma, mom)]
+                        sub_data_dic_avg['2pt_im'] = data_dic_avg['{}{}_P{}_2pt_im'.format(mass, gamma, mom)]
+
+                        for tseq in range(4, 9):
+                            set_id='{}{}_P{}_L{}_b{}_z{}_tseq{}'.format(mass, gamma, mom, ll, b, z, tseq)
+
+                            sub_data_dic_avg['ra_re_tseq_{}'.format(tseq)] = data_dic_avg[set_id+'_ra_re']
+                            sub_data_dic_avg['ra_im_tseq_{}'.format(tseq)] = data_dic_avg[set_id+'_ra_im']
+
+                        gs_fit = Gs_Fit(two_state_fit(), fit_id='{}{}_P{}_L{}_b{}_z{}_tmax{}_cut{}'.format(mass, gamma, mom, ll, b, z, ra_tmax, tau_cut))
+                        gs_fit.para_set(pt2_tmin=3, pt2_tmax=9, ra_tmin=4, ra_tmax=ra_tmax, tau_cut=tau_cut)
+
+                        fit_res = gs_fit.main_gvar(sub_data_dic_avg)
+                        collect['Q'] = fit_res.Q
+                        collect['chi2'] = fit_res.chi2 / fit_res.dof
+                        collect['logGBF'] = fit_res.logGBF
+                        collect['re'] = fit_res.p['pdf_re']
+                        collect['im'] = fit_res.p['pdf_im']
+
+                        after_gs_fit['{}{}_P{}_L{}_b{}_z{}'.format(mass, gamma, mom, ll, b, z)] = collect
+
+    print('\n >>> all gvar fit done.')
+
+    gv.dump(after_gs_fit, 'dump/gs_fit_gvar/all_after_gs_fit')
+    print('\n >>> all after_gs_fit dumped.')
+
+    return
+
+
+
+
+# %%
 if __name__ == '__main__':
     from read_raw_module import Read_Raw
 
@@ -299,6 +435,7 @@ if __name__ == '__main__':
     
     tmax = 8
     tau_cut = 1
+    
     gs_fit = Gs_Fit(two_state_fit(), fit_id='{}{}_P{}_L{}_b{}_z{}_tmax{}_cut{}'.format(mass, gamma, mom, ll, b, z, tmax, tau_cut))
     gs_fit.para_set(pt2_tmin=3, pt2_tmax=9, ra_tmin=4, ra_tmax=tmax, tau_cut=tau_cut)
 
@@ -311,24 +448,4 @@ if __name__ == '__main__':
     print(fit_res.format(100))
     
 
-
 # %%
-'''
-The standard is P{fits with Q < 0.05} < 5%.
-
-For now, we used
-tseq = 4, 5, 6, 7, 8
-tau_cut = 0
-For b < 3 and z < 9 and mom = 8, 10
-
-
-
-
-
-
-For b < 3 and z < 7 
-    mom 8: P = 0.0135
-    mom 10: P = 0.0485
-    mom 12: P = 0.1521
-
-'''

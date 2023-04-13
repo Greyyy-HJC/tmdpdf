@@ -46,7 +46,7 @@ import os
 bad_fit_bs_id = {}
 total = 0
 
-for file in os.listdir('dump/gs_fit'):
+for file in os.listdir('dump/gs_fit_bs'):
     temp = [x for x in file.split('_')[0:5]]
     gamma = temp[0][-1]
     mass = int(temp[0][:-1])
@@ -56,7 +56,7 @@ for file in os.listdir('dump/gs_fit'):
     
 
     if b < 3 and z < 9 and mom == 8:
-        load = gv.load('dump/gs_fit/'+file)['Q']
+        load = gv.load('dump/gs_fit_bs/'+file)['Q']
         for idx in range(800):
             if load[idx] < 0.05:
                 if str(idx) not in bad_fit_bs_id:
@@ -137,7 +137,7 @@ def read_and_fit(loop_paras):
     fit_id='{}{}_P{}_L{}_b{}_z{}_tmax{}_cut{}'.format(mass, gamma, mom, ll, b, z, ra_tmax, tau_cut)
 
     #* if the fit result already exists, skip it
-    # if os.path.exists('dump/gs_fit/{}_Q_chi_re_im'.format(fit_id)):
+    # if os.path.exists('dump/gs_fit_bs/{}_Q_chi_re_im'.format(fit_id)):
     #     return
 
     read_raw = Read_Raw('data_raw/')
@@ -173,7 +173,7 @@ def read_and_fit(loop_paras):
     Q_chi_re_im['re'] = np.array(pdf_re_ls)
     Q_chi_re_im['im'] = np.array(pdf_im_ls)
 
-    gv.dump(Q_chi_re_im, 'dump/gs_fit/{}_Q_chi_re_im'.format(fit_id))
+    gv.dump(Q_chi_re_im, 'dump/gs_fit_bs/{}_Q_chi_re_im'.format(fit_id))
 
 
     bad_count = len( [v for v in p_value_ls if v < 0.05] )
@@ -196,7 +196,7 @@ read_and_fit((gamma, mass, mom, ll, b, z))
 import gvar as gv
 import numpy as np
 
-test = gv.load('dump/gs_fit_chi2_dic')
+test = gv.load('dump/gs_fit_bs_chi2_dic')
 print([key for key in test])
 print(np.shape( test['total']) )
 

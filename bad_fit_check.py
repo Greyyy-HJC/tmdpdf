@@ -10,7 +10,7 @@ import os
 bad_fit_bs_id = {}
 total = 0
 
-for file in os.listdir('dump/gs_fit'):
+for file in os.listdir('dump/gs_fit_bs'):
     temp = [x for x in file.split('_')[0:7]]
     gamma = temp[0][-1]
     mass = int(temp[0][:-1])
@@ -23,7 +23,7 @@ for file in os.listdir('dump/gs_fit'):
     
 
     if tmax == 8 and tau_cut == 1 and ll == 6: #b < 3 and z < 7 and mom == 10 and tmax == 9 and tau_cut == 0:
-        load = gv.load('dump/gs_fit/'+file)['Q']
+        load = gv.load('dump/gs_fit_bs/'+file)['Q']
         for idx in range(800):
             if load[idx] < 0.05:
                 if str(idx) not in bad_fit_bs_id:
@@ -45,7 +45,7 @@ move the good quality fits to the read_from_here folder
 import shutil
 
 # specify the source and destination paths
-src_path = 'dump/gs_fit/'
+src_path = 'dump/gs_fit_bs/'
 dest_path = 'read_from_here/gs_fit/'
 
 # use the shutil.copy() function to copy the file
