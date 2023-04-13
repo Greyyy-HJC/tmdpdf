@@ -96,17 +96,19 @@ def disp_relation_plot(mom_ls, meff_ls, title):
     fit_x = np.arange(p_ls[0], p_ls[-1], 0.01)
     fit_y = fcn(fit_x, fit_res.p)
 
+    label = title[:4]
 
-    fig = plt.figure(figsize=fig_size)
+    fig = plt.figure(figsize=fig_size_Qi_An)
     ax = plt.axes(plt_axes)
-    ax.errorbar(p_ls, [v.mean for v in E_ls], [v.sdev for v in E_ls], color=blue, **errorb)
-    ax.fill_between(fit_x, [v.mean + v.sdev for v in fit_y], [v.mean - v.sdev for v in fit_y], color=blue, alpha=0.5)
+    ax.errorbar(p_ls, [v.mean for v in E_ls], [v.sdev for v in E_ls], color='dodgerblue', label=label, **errorb)
+    ax.fill_between(fit_x, [v.mean + v.sdev for v in fit_y], [v.mean - v.sdev for v in fit_y], color='dodgerblue', alpha=0.5)
 
-    ax.tick_params(direction='in', top='on', right='on', **ls_p)
+    ax.tick_params(direction='out', **ls_p)
     ax.grid(linestyle=':')
-    ax.set_xlabel(r'$P$ / GeV', font)
-    ax.set_ylabel(r'$E$ / GeV', font)
-    plt.title(title, font)
+    ax.set_xlabel(r'$P$ / GeV', font_Qi_An)
+    ax.set_ylabel(r'$E$ / GeV', font_Qi_An)
+    plt.legend(fontsize = fontsize_Qi_An)
+    # plt.title(title, font_Qi_An)
     plt.savefig('fig/'+title+'.pdf', transparent=True)
     plt.show()
 

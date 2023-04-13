@@ -14,6 +14,7 @@ read_from_here folder: important medium files to be read
 ```
 general plot functions are in funcs.py
 specific plot functions are in plot.py
+specific plot for specific project setting are in different files like disp_relation.py and stability_gs_fit.py
 ```
 
 

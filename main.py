@@ -49,7 +49,7 @@ if False:
         results = list(tqdm(pool.imap(read_and_fit_bs, loop_paras_ls), total=len(loop_paras_ls))) #* use tqdm to show the progress
 
 #! gvar fit
-if True:
+if False:
     from gs_fit_module import read_and_fit_gvar
     read_and_fit_gvar()
 

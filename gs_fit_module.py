@@ -1,30 +1,42 @@
-''' #todo re-edit to fit in the new framework
-This is the module to do the ground state fit with bootstrap data.
+''' FOR CLASS Gs_Fit
+This is the module to do the ground state fit with bootstrap list / gvar averaged data.
 
-The input will be the prior setting dict.
-The ouput will be the lists of p value, chi2, and the real / imag bare g.s. matrix elements, the lists will be in the same order as the input bs list.
+There are 2 main functions: main_bs and main_gvar, used for bootstrap list (N_bs fits) and gvar averaged data (1 fit) respectively.
 
+The init of this class will be the prior setting dict and fit_id, which is used for log and dump.
 All the fitting parameters will be set here with function para_set.
-Call the main function with data dic as the input, it will return the fit result.
+
+The input of main_bs() should be a data_dic with the following keys:
+    data_dic['2pt_re'] = shape (N_bs, N_t)
+    data_dic['2pt_im'] = shape (N_bs, N_t)
+    data_dic['ra_re_tseq_{}'] = shape (N_bs, N_tau), here tau should start from 1 to tseq(not included)
+    data_dic['ra_im_tseq_{}'] = shape (N_bs, N_tau)
+The ouput of main_bs() will be the lists of p value, chi2, and the real / imag bare g.s. matrix elements, the lists will be in the same order as the input bs list.
+
+The input of main_gvar() should be a data_dic_avg with the following keys:
+    data_dic_avg['2pt_re'] = shape (N_t)
+    data_dic_avg['2pt_im'] = shape (N_t)
+    data_dic_avg['ra_re_tseq_{}'] = shape (N_tau), here tau should start from 1 to tseq(not included)
+    data_dic_avg['ra_im_tseq_{}'] = shape (N_tau)
+The ouput of main_gvar() will be the fit_res
 
 Here we do the joint fit of 2pt and ratio, FH can be added if necessary.
 Here we set pt2_n = ra_n = 2.
 
-Data dic should be a dict as:
-data_dic['2pt_re'] = shape (N_bs, N_t)
-data_dic['2pt_im'] = shape (N_bs, N_t)
-data_dic['ra_re_tseq_{}'] = shape (N_bs, N_tau), here tau should start from 1 to tseq(not included)
-data_dic['ra_im_tseq_{}'] = shape (N_bs, N_tau)
+Watch out the usage of tau_cut and tau_cut_id, here tau_cut = 0 means tau = [1, 2, 3, ..., tseq-1], tau_cut = 1 means tau = [2, 3, ..., tseq-2], etc.
 
-Both the fit results and the plot of the first fit with bs_idx = 0 will be saved in log folder. The log file named as '220z_P8_L6b1z1'.
+Both the fit results and the plot of the (first fit with bs_idx = 0) or (gvar averaged fit) will be saved in log folder. The log file named as '220z_P8_L6_b1_z1_tmax{}_cut{}'.
 
-Example usage can be found in the end.
+Example usage of this class can be found in the end of the file if __name__ == '__main__' .
 '''
 
-'''
-main_bs is the main function to do the fit with the input bootstrap data_dic. (N_bs fits)
-main_gvar is the main function to do the fit with the input gvar data_dic_avg. (1 fit)
-main_gvar will return the fit_res
+''' FOR FUNCTIONs
+There are two functions in this file: read_and_fit_bs and read_and_fit_gvar, used in main.py for bootstrap list (N_bs fits) and gvar averaged data (1 fit) respectively.
+
+read_and_fit_bs takes inputs like (gamma, mass, mom, ll, b, z), for convenience of parallelization.
+read_and_fit_gvar takes no input.
+
+The output of both functions will be dumped file in the dump folder, remember to copy the important dump files to the read_from_here folder.
 '''
 
 # %%
