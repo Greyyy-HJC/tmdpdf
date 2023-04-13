@@ -57,31 +57,34 @@ def each_fit(tmin, b, z):
 
 
     p_value = fit_res.Q
-    chi2 = fit_res.chi2 / fit_res.dof
+    logGBF = fit_res.logGBF
     re_gv = fit_res.p['pdf_re']
     im_gv = fit_res.p['pdf_im']
 
 
-    return p_value, chi2, re_gv, im_gv
+    return p_value, logGBF, re_gv, im_gv
 
 
 
 tmin_ls = np.arange(4, 7)
 p_value_ls = []
-chi2_ls = []
+logGBF_ls = []
 re_gv_ls = []
 im_gv_ls = []
 
 for tmin in tmin_ls:
-    p_value, chi2, re_gv, im_gv = each_fit(tmin, b=1, z=1)
+    p_value, logGBF, re_gv, im_gv = each_fit(tmin, b=1, z=1)
     p_value_ls.append(p_value)
-    chi2_ls.append(chi2)
+    logGBF_ls.append(logGBF)
     re_gv_ls.append(re_gv)
     im_gv_ls.append(im_gv)
 
 
-stability_plot(tmin_ls, re_gv_ls, p_value_ls, chi2_ls, 'b1_z1_real', chose_idx=0, save=True)
+from plot import tmin_stability_plot
 
 
+tmin_stability_plot(tmin_ls, re_gv_ls, p_value_ls, logGBF_ls, 'b1_z1_real', chose_idx=0, save=True)
+
+tmin_stability_plot(tmin_ls, im_gv_ls, p_value_ls, logGBF_ls, 'b1_z1_imag', chose_idx=0, save=True)
 
 # %%
