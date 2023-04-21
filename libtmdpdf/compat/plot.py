@@ -69,7 +69,18 @@ def meff_plot(pt2_ls, ti, tf, fit_res, title):
 def fit_on_data_plot_2pt(
     x, gv_y, fit_res, key, title, log_folder, ylim=None, save=True
 ):
-    # * this is a general plot function to make effective mass plot with fit band on the data
+    """this is a general plot function to make effective mass plot with fit band on the data
+
+    Args:
+        x (_type_): _description_
+        gv_y (_type_): _description_
+        fit_res (_type_): _description_
+        key (_type_): _description_
+        title (_type_): _description_
+        log_folder (_type_): _description_
+        ylim (_type_, optional): _description_. Defaults to None.
+        save (bool, optional): _description_. Defaults to True.
+    """
 
     # * data part
     mx = x[:-1]
@@ -120,6 +131,15 @@ def fit_on_data_plot_ratio(
     This function is used to make a plot of the 3pt / 2pt ratio with fit results on the data points
     Plot both real and imag parts
     ra_t and ra_tau are just t_ls and tau_ls used for fits, ra_re_gv and ra_im_gv are the y values for fits
+
+    Args:
+        ra_t (_type_): _description_
+        ra_tau (_type_): _description_
+        ra_re_gv (_type_): _description_
+        ra_im_gv (_type_): _description_
+        fit_res (_type_): _description_
+        title (_type_): _description_
+        log_folder (_type_): _description_
     """
 
     tmin = min(ra_t)
@@ -234,6 +254,16 @@ def hist_plot(
 ):
     """
     define a function to make a histogram plot of a list of values.
+
+    Args:
+        dic (_type_): _description_
+        xlabel (_type_): _description_
+        title (_type_): _description_
+        xlim (_type_, optional): _description_. Defaults to None.
+        ylim (_type_, optional): _description_. Defaults to None.
+        accumulate (bool, optional): _description_. Defaults to False.
+        save (bool, optional): _description_. Defaults to True.
+        figsize (tuple, optional): _description_. Defaults to (6, 6).
     """
     all = np.concatenate(list(dic.values()))
     all = all.ravel()

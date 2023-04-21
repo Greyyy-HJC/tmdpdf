@@ -1,13 +1,15 @@
+from typing import Callable, Any
+
 import h5py
 
 
-def print_h5(group: h5py.Group, level=0, logger=print):
+def print_h5(group: h5py.Group, level=0, logger: Callable[[Any], Any] = print):
     """print h5 group to consol.
 
     Args:
         group (h5py.Group): _description_
         level (int, optional): _description_. Defaults to 0.
-        logger: print like functions
+        logger (Callable[[Any], Any]): print like functions
     """
     if not isinstance(group, h5py.Group):
         logger(level * "\t", group)

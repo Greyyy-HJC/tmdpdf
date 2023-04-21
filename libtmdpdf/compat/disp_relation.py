@@ -14,7 +14,13 @@ Ls = 48
 def meff_fit(t_ls, meff_ls):
     '''
     constant fit of meff
-    input t_ls and meff_ls, return the gvar fit result of meff
+    
+    Args:
+        t_ls :
+        meff_ls :
+    
+    Returns:
+        the gvar fit result of meff
     '''
     def fcn(x, p):
         return p['meff'] + x * 0

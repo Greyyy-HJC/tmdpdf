@@ -10,8 +10,10 @@ def lat_unit_convert(val, a, Ls, dimension):
     """
     convert lattice unit to GeV / fm
     dimension: 'M', 'T'
-    a is the lattice spacing
-    Ls is the lattice size in space direction
+
+    Args:
+        a : the lattice spacing
+        Ls : the lattice size in space direction
     """
     if dimension == "P":
         #! m * (2pi * 0.197 / Ls / a)
@@ -35,8 +37,10 @@ def pt2_to_meff(pt2_ls):
 
 def bootstrap(conf_ls, times=500, seed_path=None):
     """
-    make sure conf_ls.shape = (N_conf, ...)
-    return conf_ls
+    make sure `conf_ls.shape` = $(N_{conf}, ...)$
+    
+    Returns:
+        conf_ls
     """
 
     # *# If using a fixed bs_ls
@@ -56,7 +60,7 @@ def bs_ls_to_gvar_ls(bs_ls):
     """
     This function is used to convert the bootstrap list to gvar list by combining each sample with the sdev of all samples
 
-    The shape of bs_ls should be (N_samp, ...)
+    The shape of `bs_ls` should be $(N_{samp}, ...)$
     """
 
     avg = gv.dataset.avg_data(bs_ls, bstrap=True)
@@ -67,7 +71,7 @@ def bs_ls_to_gvar_ls(bs_ls):
 
 def jackknife(data):
     """
-    make sure data.shape = (N_conf * n_t)
+    make sure `data.shape` = $(N_{conf} * n_t)$
     """
     nf, nt = data.shape  # data shape: (N_conf * n_t)
     cv = np.mean(data, axis=0, keepdims=True)  # average all conf, cv shape: (1 * nt)

@@ -43,3 +43,8 @@ python3 scripts/main.py
 * `mkdocs build` - Build the documentation site.
 * `mkdocs -h` - Print help message and exit.
 * `mkdocs gh-deploy --force --no-history` - update github pages mannually.
+
+
+The homomorphism $f$ is injective if and only if its kernel is only the 
+singleton set $e_G$, because otherwise $\exists a,b\in G$ with $a\neq b$ such 
+that $f(a)=f(b)$.
