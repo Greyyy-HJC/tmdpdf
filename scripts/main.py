@@ -11,11 +11,10 @@ The main steps are:
 
 """
 
+# %%
 import multiprocessing as mp
 import os
-
 import gvar as gv
-# %%
 import numpy as np
 from tqdm import tqdm
 
@@ -74,51 +73,36 @@ if False:
 do the renormalization, make z dependence plots
 """
 #############################################################
-if False:
-    # * read the gs fit result
-    re_dic = {"L6": [], "L8": [], "L10": []}
-    im_dic = {"L6": [], "L8": [], "L10": []}
+if True:
+    #* read the gs fit result
+    load = gv.load('read_from_here/all_after_gs_fit')
 
-    b = 1
+    mass = 220
+    gamma = 't'
     mom = 8
+    ll = 6
 
-    for ll in [6, 8, 10]:
+    re_dic = {}
+    im_dic = {}
+
+    for b in range(1, 6):
+        re_dic['b{}'.format(b)] = []
+        im_dic['b{}'.format(b)] = []
         for z in range(13):
-            temp = gv.load(
-                "dump/gs_fit_bs/220t_P{}_L{}_b{}_z{}_tmax8_cut1_Q_chi_re_im".format(
-                    mom, ll, b, z
-                )
-            )
+            fit_id = '{}{}_P{}_L{}_b{}_z{}'.format(mass, gamma, mom, ll, b, z)
+ 
+            re_dic['b{}'.format(b)].append(load[fit_id]['re'])
+            im_dic['b{}'.format(b)].append(load[fit_id]['im'])
 
-            re = gv.dataset.avg_data(temp["re"], bstrap=True)
-            im = gv.dataset.avg_data(temp["im"], bstrap=True)
+    #todo renormalization
 
-            re_dic["L{}".format(ll)].append(re)
-            im_dic["L{}".format(ll)].append(im)
+    #* make z dependence plots of different b in one figure
+    label_ls = ['b{}'.format(b) for b in range(1, 6)]
 
-    y_ls = [[v.mean for v in re_dic["L{}".format(ll)]] for ll in [6, 8, 10]]
-    yerr_ls = [[v.sdev for v in re_dic["L{}".format(ll)]] for ll in [6, 8, 10]]
-    label_ls = ["L6", "L8", "L10"]
+    errorbar_ls_plot([np.arange(13) for i in range(5)], [gv.mean(re_dic['b{}'.format(b)]) for b in range(1, 6)], [gv.sdev(re_dic['b{}'.format(b)]) for b in range(1, 6)], label_ls, 'z dependence mix b at {}{}, mom={}, L={}, real'.format(mass, gamma, mom, ll))
 
-    errorbar_ls_plot(
-        [np.arange(13) for i in range(3)],
-        y_ls,
-        yerr_ls,
-        label_ls,
-        "z dependence mix L at b={}, mom=8, real".format(b),
-    )
-
-    y_ls = [[v.mean for v in im_dic["L{}".format(ll)]] for ll in [6, 8, 10]]
-    yerr_ls = [[v.sdev for v in im_dic["L{}".format(ll)]] for ll in [6, 8, 10]]
-    label_ls = ["L6", "L8", "L10"]
-
-    errorbar_ls_plot(
-        [np.arange(13) for i in range(3)],
-        y_ls,
-        yerr_ls,
-        label_ls,
-        "z dependence mix L at b={}, mom=8, imag".format(b),
-    )
+    
+    errorbar_ls_plot([np.arange(13) for i in range(5)], [gv.mean(im_dic['b{}'.format(b)]) for b in range(1, 6)], [gv.sdev(im_dic['b{}'.format(b)]) for b in range(1, 6)], label_ls, 'z dependence mix b at {}{}, mom={}, L={}, imag'.format(mass, gamma, mom, ll))
 
 #############################################################
 #############################################################

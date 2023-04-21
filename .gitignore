@@ -1,4 +1,4 @@
-data_raw/*.h5
+data/data_raw/*.h5
 *.slurm
 *.err
 *.out
