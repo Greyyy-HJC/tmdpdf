@@ -1,0 +1,11 @@
+gvar
+h5py
+lsqfit
+matplotlib
+pandas
+rich
+
+# build docs
+mkdocs
+mkdocstrings[python]
+mkdocs-material
