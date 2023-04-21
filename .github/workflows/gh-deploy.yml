@@ -25,6 +25,7 @@ jobs:
         with:
           python-version: 3.8
       - run: git submodule update --init
+      - run: pip install numpy
       - run: pip install -r requirements.txt
       - run: pip install .
       - run: mkdocs gh-deploy --force --no-history --remote-branch gh-pages
