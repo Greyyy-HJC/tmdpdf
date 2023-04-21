@@ -7,6 +7,7 @@ This module is about the renormalization process, including Wilson loop and ZO f
 import h5py as h5
 import numpy as np
 
+
 class Renormalization():
     def __init__(self, folder_path):
         self.wloop_path = 'data_raw/record_extro_wloop.h5'

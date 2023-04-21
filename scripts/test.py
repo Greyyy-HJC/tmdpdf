@@ -102,10 +102,11 @@ throw away the bad configs
 """
 
 import os
+
 import numpy as np
+
 from libtmdpdf.compat.funcs import *
 from libtmdpdf.compat.read_raw_module import Read_Raw
-
 
 read_raw = Read_Raw("data_raw/")
 
@@ -126,6 +127,7 @@ adjust the bad fits
 """
 import gvar as gv
 import numpy as np
+
 from libtmdpdf.compat.gs_fit_module import Gs_Fit
 from libtmdpdf.compat.prior_setting import two_state_fit
 from libtmdpdf.compat.read_raw_module import Read_Raw
