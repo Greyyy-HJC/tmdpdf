@@ -3,6 +3,8 @@ h5py
 lsqfit
 matplotlib
 pandas
+numpy
+scipy
 rich
 
 # build docs
