@@ -3,7 +3,9 @@
 This is TMDPDF project from LPC group, SJTU.
 Documentation of Transverse Momentum Dependent Parton Distribution Function (TMDPDF).
 
-## Installation
+## Getting Start
+
+### Installation
 
 install for development
 
@@ -20,7 +22,7 @@ or install for usage
 pip install git+`url to this repo`
 ```
 
-## Run Example Scripts
+### Run Example Scripts
 
 ```shell
 python3 scripts/main.py
@@ -44,7 +46,3 @@ python3 scripts/main.py
 * `mkdocs -h` - Print help message and exit.
 * `mkdocs gh-deploy --force --no-history` - update github pages mannually.
 
-
-The homomorphism $f$ is injective if and only if its kernel is only the 
-singleton set $e_G$, because otherwise $\exists a,b\in G$ with $a\neq b$ such 
-that $f(a)=f(b)$.
