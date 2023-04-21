@@ -1,11 +1,11 @@
-gvar
+numpy
 h5py
-lsqfit
 matplotlib
 pandas
-numpy
 scipy
 rich
+gvar
+lsqfit
 
 # build docs
 mkdocs
