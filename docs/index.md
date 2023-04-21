@@ -42,3 +42,4 @@ python3 scripts/main.py
 * `mkdocs serve` - Start the live-reloading docs server.
 * `mkdocs build` - Build the documentation site.
 * `mkdocs -h` - Print help message and exit.
+* `mkdocs gh-deploy --force --no-history` - update github pages mannually.
