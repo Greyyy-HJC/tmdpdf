@@ -3,7 +3,6 @@ data_raw/*.h5
 *.err
 *.out
 temp/*
-site/
 .DS_Store
 
 # Byte-compiled / optimized / DLL files
