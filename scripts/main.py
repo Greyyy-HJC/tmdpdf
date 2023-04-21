@@ -74,11 +74,11 @@ do the renormalization, make z dependence plots
 """
 #############################################################
 if True:
-    #* read the gs fit result
-    load = gv.load('read_from_here/all_after_gs_fit')
+    # * read the gs fit result
+    load = gv.load("data/read_from_here/all_after_gs_fit")
 
     mass = 220
-    gamma = 't'
+    gamma = "t"
     mom = 8
     ll = 6
 
@@ -86,23 +86,34 @@ if True:
     im_dic = {}
 
     for b in range(1, 6):
-        re_dic['b{}'.format(b)] = []
-        im_dic['b{}'.format(b)] = []
+        re_dic["b{}".format(b)] = []
+        im_dic["b{}".format(b)] = []
         for z in range(13):
-            fit_id = '{}{}_P{}_L{}_b{}_z{}'.format(mass, gamma, mom, ll, b, z)
- 
-            re_dic['b{}'.format(b)].append(load[fit_id]['re'])
-            im_dic['b{}'.format(b)].append(load[fit_id]['im'])
+            fit_id = "{}{}_P{}_L{}_b{}_z{}".format(mass, gamma, mom, ll, b, z)
 
-    #todo renormalization
+            re_dic["b{}".format(b)].append(load[fit_id]["re"])
+            im_dic["b{}".format(b)].append(load[fit_id]["im"])
 
-    #* make z dependence plots of different b in one figure
-    label_ls = ['b{}'.format(b) for b in range(1, 6)]
+    # todo renormalization
 
-    errorbar_ls_plot([np.arange(13) for i in range(5)], [gv.mean(re_dic['b{}'.format(b)]) for b in range(1, 6)], [gv.sdev(re_dic['b{}'.format(b)]) for b in range(1, 6)], label_ls, 'z dependence mix b at {}{}, mom={}, L={}, real'.format(mass, gamma, mom, ll))
+    # * make z dependence plots of different b in one figure
+    label_ls = ["b{}".format(b) for b in range(1, 6)]
 
-    
-    errorbar_ls_plot([np.arange(13) for i in range(5)], [gv.mean(im_dic['b{}'.format(b)]) for b in range(1, 6)], [gv.sdev(im_dic['b{}'.format(b)]) for b in range(1, 6)], label_ls, 'z dependence mix b at {}{}, mom={}, L={}, imag'.format(mass, gamma, mom, ll))
+    errorbar_ls_plot(
+        [np.arange(13) for i in range(5)],
+        [gv.mean(re_dic["b{}".format(b)]) for b in range(1, 6)],
+        [gv.sdev(re_dic["b{}".format(b)]) for b in range(1, 6)],
+        label_ls,
+        "z dependence mix b at {}{}, mom={}, L={}, real".format(mass, gamma, mom, ll),
+    )
+
+    errorbar_ls_plot(
+        [np.arange(13) for i in range(5)],
+        [gv.mean(im_dic["b{}".format(b)]) for b in range(1, 6)],
+        [gv.sdev(im_dic["b{}".format(b)]) for b in range(1, 6)],
+        label_ls,
+        "z dependence mix b at {}{}, mom={}, L={}, imag".format(mass, gamma, mom, ll),
+    )
 
 #############################################################
 #############################################################

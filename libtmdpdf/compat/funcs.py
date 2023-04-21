@@ -38,7 +38,7 @@ def pt2_to_meff(pt2_ls):
 def bootstrap(conf_ls, times=500, seed_path=None):
     """
     make sure `conf_ls.shape` = $(N_{conf}, ...)$
-    
+
     Returns:
         conf_ls
     """
@@ -201,7 +201,8 @@ def errorbar_plot(x, y, yerr, title, ylim=None, save=True):
     plt.title(title, font)
     # plt.legend()
     if save == True:
-        plt.savefig("fig/" + title + ".pdf", transparent=True)
+        # TODO: save fig to `outputs` directory and add it to .gitignore
+        plt.savefig("data/fig/" + title + ".pdf", transparent=True)
     # plt.show()
 
 
@@ -218,7 +219,8 @@ def errorbar_ls_plot(x_ls, y_ls, yerr_ls, label_ls, title, ylim=None, save=True)
     plt.title(title, font)
     plt.legend()
     if save == True:
-        plt.savefig("fig/" + title + ".pdf", transparent=True)
+        # TODO: save fig to `outputs` directory and add it to .gitignore
+        plt.savefig("data/fig/" + title + ".pdf", transparent=True)
     # plt.show()
 
 
@@ -239,7 +241,8 @@ def fill_between_plot(x, y, yerr, title, ylim=None, save=True):
     plt.title(title, font)
     # plt.legend()
     if save == True:
-        plt.savefig("fig/" + title + ".pdf", transparent=True)
+        # TODO: save fig to `outputs` directory and add it to .gitignore
+        plt.savefig("data/fig/" + title + ".pdf", transparent=True)
     # plt.show()
 
 
@@ -292,6 +295,7 @@ def stability_plot(x_ls, gv_y_ls, Q_ls, logGBF_ls, title, chose_idx, save=True):
     axs[0].set_title(title, font)
 
     if save == True:
-        plt.savefig("fig/" + title + ".pdf", transparent=True)
+        # TODO: save fig to `outputs` directory and add it to .gitignore
+        plt.savefig("data/fig/" + title + ".pdf", transparent=True)
     # Display the plot
     plt.show()
