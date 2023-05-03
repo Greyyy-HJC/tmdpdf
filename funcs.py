@@ -2,7 +2,19 @@
 import numpy as np
 import gvar as gv
 import matplotlib.pyplot as plt
+import h5py as h5
 from head import *
+
+def readin_wloop(b, z): # 源程序和数据在"Mirror/work/TMDPDF/analysis_selectL"
+    ll = 6
+
+    h5_file = h5.File('data_raw/record_extro_wloop.h5', "r")['/b='+str(b)+'/cv'][:]
+    
+    select = 2*ll+z
+    wloop = h5_file[select]
+    wloop = np.mean(wloop, dtype=np.float64)
+
+    return wloop
 
 
 def lat_unit_convert(val, a, Ls, dimension):

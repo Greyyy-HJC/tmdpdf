@@ -200,7 +200,7 @@ check correlation
 
 import gvar as gv
 
-test = gv.load('read_from_here/all_after_gs_fit')
+test = gv.load('read_from_here/all_after_gs_fit_2pt_tmin2.pkl')
 dic = {}
 lis = []
 

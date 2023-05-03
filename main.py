@@ -65,43 +65,50 @@ if False:
 do the renormalization, make z dependence plots
 '''
 #############################################################
-if False:
+if True:
     #* read the gs fit result
-    re_dic = {'L6':[], 'L8':[], 'L10':[]}
-    im_dic = {'L6':[], 'L8':[], 'L10':[]}
+    all_after_gs_fit = gv.load('read_from_here/all_after_gs_fit_2pt_tmin2.pkl')
 
-    b = 1
+    re_dic = {'b1':[], 'b2':[], 'b3':[], 'b4':[], 'b5':[]}
+    im_dic = {'b1':[], 'b2':[], 'b3':[], 'b4':[], 'b5':[]}
+
+    mass = 220
+    gamma = 'z'
     mom = 8
+    ll = 6
 
-    for ll in [6, 8, 10]:
+    for b in range(1, 6):
         for z in range(13):
-            temp = gv.load('dump/gs_fit_bs/220t_P{}_L{}_b{}_z{}_tmax8_cut1_Q_chi_re_im'.format(mom, ll, b, z))
+            fit_id = '{}{}_P{}_L{}_b{}_z{}'.format(mass, gamma, mom, ll, b, z)
 
-            re = gv.dataset.avg_data(temp['re'], bstrap=True)
-            im = gv.dataset.avg_data(temp['im'], bstrap=True)
+            temp = all_after_gs_fit[fit_id]
 
-            re_dic['L{}'.format(ll)].append(re)
-            im_dic['L{}'.format(ll)].append(im)
+            #! renormalization
+            zO_fix = 1.05
+            wl_sqrt = np.sqrt( readin_wloop(b, z) )
+
+            re = temp['re'] / (zO_fix * wl_sqrt)
+            im = temp['im'] / (zO_fix * wl_sqrt)
+
+            re_dic['b{}'.format(b)].append(re)
+            im_dic['b{}'.format(b)].append(im)
 
 
-    y_ls = [ [v.mean for v in re_dic['L{}'.format(ll)]] for ll in [6, 8, 10] ]
-    yerr_ls = [ [v.sdev for v in re_dic['L{}'.format(ll)]] for ll in [6, 8, 10] ]
-    label_ls = ['L6', 'L8', 'L10']
+    y_ls = [ [v.mean for v in re_dic['b{}'.format(b)]] for b in range(1, 6) ]
+    yerr_ls = [ [v.sdev for v in re_dic['b{}'.format(b)]] for b in range(1, 6) ]
+    label_ls = ['b1', 'b2', 'b3', 'b4', 'b5']
 
-    errorbar_ls_plot([np.arange(13) for i in range(3)], y_ls, yerr_ls, label_ls, 'z dependence mix L at b={}, mom=8, real'.format(b))
+    errorbar_ls_plot([np.arange(13) for i in range(5)], y_ls, yerr_ls, label_ls, 'z dependence mix b, {}{}_P{}_L{}, real'.format(mass, gamma, mom, ll), ylim=[-0.5, 1.8])
 
 
-    y_ls = [ [v.mean for v in im_dic['L{}'.format(ll)]] for ll in [6, 8, 10] ]
-    yerr_ls = [ [v.sdev for v in im_dic['L{}'.format(ll)]] for ll in [6, 8, 10] ]
-    label_ls = ['L6', 'L8', 'L10']
+    y_ls = [ [v.mean for v in im_dic['b{}'.format(b)]] for b in range(1, 6) ]
+    yerr_ls = [ [v.sdev for v in im_dic['b{}'.format(b)]] for b in range(1, 6) ]
+    label_ls = ['b1', 'b2', 'b3', 'b4', 'b5']
 
-    errorbar_ls_plot([np.arange(13) for i in range(3)], y_ls, yerr_ls, label_ls, 'z dependence mix L at b={}, mom=8, imag'.format(b))
+    errorbar_ls_plot([np.arange(13) for i in range(5)], y_ls, yerr_ls, label_ls, 'z dependence mix b, {}{}_P{}_L{}, imag'.format(mass, gamma, mom, ll), ylim=[-0.5, 1.8])
 
 #############################################################
 #############################################################
-
-
-
 
 
 
