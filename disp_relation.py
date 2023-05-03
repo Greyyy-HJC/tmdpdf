@@ -8,6 +8,7 @@ import lsqfit as lsf
 
 from funcs import *
 from read_raw_module import Read_Raw
+from matplotlib.ticker import MultipleLocator
 
 a = 0.12 # lattice spacing
 Ls = 48
@@ -96,16 +97,26 @@ def disp_relation_plot(mom_ls, meff_ls, title):
     fit_x = np.arange(p_ls[0], p_ls[-1], 0.01)
     fit_y = fcn(fit_x, fit_res.p)
 
-    label = title[:4]
+    label = r'$m_{\pi}$='+title[1:4]+' MeV'
 
     fig = plt.figure(figsize=fig_size_Qi_An)
     ax = plt.axes(plt_axes)
-    ax.errorbar(p_ls, [v.mean for v in E_ls], [v.sdev for v in E_ls], color='dodgerblue', label=label, **errorb)
+    ax.errorbar(p_ls, [v.mean for v in E_ls], [v.sdev for v in E_ls], color='dodgerblue', label=label, fmt='x', **errorb)
     ax.fill_between(fit_x, [v.mean + v.sdev for v in fit_y], [v.mean - v.sdev for v in fit_y], color='dodgerblue', alpha=0.5)
+
+    xmajor = MultipleLocator(0.5)
+    xminor = MultipleLocator(0.1)
+    ax.xaxis.set_major_locator(xmajor)
+    ax.xaxis.set_minor_locator(xminor)
+    ymajor = MultipleLocator(0.5)
+    yminor = MultipleLocator(0.1)
+    ax.yaxis.set_major_locator(ymajor)
+    ax.yaxis.set_minor_locator(yminor)
+
 
     ax.tick_params(direction='out', **ls_p)
     ax.grid(linestyle=':')
-    ax.set_xlabel(r'$P$ / GeV', font_Qi_An)
+    ax.set_xlabel(r'$P^z$ / GeV', font_Qi_An)
     ax.set_ylabel(r'$E$ / GeV', font_Qi_An)
     plt.legend(fontsize = fontsize_Qi_An)
     # plt.title(title, font_Qi_An)
