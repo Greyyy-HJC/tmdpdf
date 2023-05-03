@@ -30,7 +30,7 @@ from funcs import *
 class Read_Raw():
     def __init__(self, folder_path):
         self.folder_path = folder_path
-        self.bs_seed_path = self.folder_path + '/bs_ls_800_clean' #todo
+        self.bs_seed_path = self.folder_path + '/bs_ls_800' #todo use regular one instead of clean one
 
     def get_pt2_path(self, mass):
         return self.folder_path + '/a12m130p_tmdpdf_m{}_2pt.h5'.format(mass)
@@ -135,6 +135,7 @@ class Read_Raw():
         if gamma == 't':
             ra_re = ( ra_pz_re + ra_nz_re ) / 2 
             ra_im = ( ra_pz_im - ra_nz_im ) / 2 
+
 
         elif gamma == 'z': #! exchange real and imag part here
             ra_im = ( ra_pz_re - ra_nz_re ) / 2

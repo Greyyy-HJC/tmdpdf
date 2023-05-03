@@ -69,10 +69,7 @@ errorbar_ls_plot( [np.arange(0, 14, 2)], [gv.mean(m310_fit_ls)], [gv.sdev(m310_f
 
 
 # %%
-#todo make a nice plot of the dispersion relation
-#todo convert lattice unit to GeV
-#todo fit dispersion relation
-#todo plot the fit results on the plot
+#* plot for the paper
 
 def disp_relation_plot(mom_ls, meff_ls, title):
     a = 0.12 # lattice spacing in fm

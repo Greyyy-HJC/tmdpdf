@@ -369,8 +369,8 @@ def read_and_fit_gvar():
     data_dic_avg = gv.dataset.avg_data(data_dic, bstrap=True)
     print( '\n>>> global average done. totally {} sets.'.format( (len(data_dic_avg) - 24)/5 ) ) #* should be 780
 
-    gv.dump(data_dic_avg, 'dump/gs_fit_gvar/all_data_dic_avg')
-    print('\n >>> all data_dic_avg dumped.')
+    # gv.dump(data_dic_avg, 'dump/gs_fit_gvar/all_data_dic_avg')
+    # print('\n >>> all data_dic_avg dumped.')
 
 
 
@@ -411,8 +411,89 @@ def read_and_fit_gvar():
 
     print('\n >>> all gvar fit done.')
 
-    gv.dump(after_gs_fit, 'dump/gs_fit_gvar/all_after_gs_fit')
-    print('\n >>> all after_gs_fit dumped.')
+    # gv.dump(after_gs_fit, 'dump/gs_fit_gvar/all_after_gs_fit')
+    # print('\n >>> all after_gs_fit dumped.')
+
+    return
+
+
+def read_and_fit_gvar_test():
+    from read_raw_module import Read_Raw
+    from tqdm.auto import trange
+
+    #! here is the fitting parameter setting
+    ra_tmax = 9
+    tau_cut = 1
+
+    read_raw = Read_Raw('data_raw/')
+    data_dic = {}
+
+    #* read all the data
+    print('\n>>> start reading all the data:')
+    for mass in tqdm([220], desc='mass loop'):
+        for gamma in tqdm(['t'], desc='gamma loop'):
+            for mom in tqdm([8], desc='mom loop'):
+                temp_2pt = read_raw.read_2pt_bs(mass, mom)
+                data_dic['{}{}_P{}_2pt_re'.format(mass, gamma, mom)] = np.real( temp_2pt )
+                data_dic['{}{}_P{}_2pt_im'.format(mass, gamma, mom)] = np.imag( temp_2pt )
+                
+                ll = 6
+                for b in trange(2, 3, desc='b loop', leave=False):
+                    for z in trange(13, desc='z loop', leave=False):
+                        for tseq in range(4, 9):
+                            set_id='{}{}_P{}_L{}_b{}_z{}_tseq{}'.format(mass, gamma, mom, ll, b, z, tseq)
+
+                            temp_ra_re, temp_ra_im = read_raw.read_ratio_bs(gamma, mass, mom, ll, b, z, tseq)
+                            data_dic[set_id+'_ra_re'] = temp_ra_re[:, 1:tseq]
+                            data_dic[set_id+'_ra_im'] = temp_ra_im[:, 1:tseq]
+
+    data_dic_avg = gv.dataset.avg_data(data_dic, bstrap=True)
+    print( '\n>>> global average done. totally {} sets.'.format( (len(data_dic_avg) - 24)/5 ) ) #* should be 780
+
+    # gv.dump(data_dic_avg, 'dump/gs_fit_gvar/all_data_dic_avg')
+    # print('\n >>> all data_dic_avg dumped.')
+
+
+
+    #* do the fit for each set
+    print('\n>>> start fitting each set:')
+
+    after_gs_fit = {}
+    for mass in tqdm([220], desc='mass loop'):
+        for gamma in tqdm(['t'], desc='gamma loop'):
+            for mom in tqdm([8], desc='mom loop'):
+                ll = 6
+                for b in trange(2, 3, desc='b loop', leave=False):
+                    for z in trange(13, desc='z loop', leave=False):
+                        collect = {}
+
+                        #* construct the sub_data_dic_avg for each set
+                        sub_data_dic_avg = {}
+                        sub_data_dic_avg['2pt_re'] = data_dic_avg['{}{}_P{}_2pt_re'.format(mass, gamma, mom)]
+                        sub_data_dic_avg['2pt_im'] = data_dic_avg['{}{}_P{}_2pt_im'.format(mass, gamma, mom)]
+
+                        for tseq in range(4, 9):
+                            set_id='{}{}_P{}_L{}_b{}_z{}_tseq{}'.format(mass, gamma, mom, ll, b, z, tseq)
+
+                            sub_data_dic_avg['ra_re_tseq_{}'.format(tseq)] = data_dic_avg[set_id+'_ra_re']
+                            sub_data_dic_avg['ra_im_tseq_{}'.format(tseq)] = data_dic_avg[set_id+'_ra_im']
+
+                        gs_fit = Gs_Fit(two_state_fit(), fit_id='{}{}_P{}_L{}_b{}_z{}_tmax{}_cut{}'.format(mass, gamma, mom, ll, b, z, ra_tmax, tau_cut))
+                        gs_fit.para_set(pt2_tmin=2, pt2_tmax=9, ra_tmin=4, ra_tmax=ra_tmax, tau_cut=tau_cut)
+
+                        fit_res = gs_fit.main_gvar(sub_data_dic_avg)
+                        collect['Q'] = fit_res.Q
+                        collect['chi2'] = fit_res.chi2 / fit_res.dof
+                        collect['logGBF'] = fit_res.logGBF
+                        collect['re'] = fit_res.p['pdf_re']
+                        collect['im'] = fit_res.p['pdf_im']
+
+                        after_gs_fit['{}{}_P{}_L{}_b{}_z{}'.format(mass, gamma, mom, ll, b, z)] = collect
+
+    print('\n >>> all gvar fit done.')
+
+    # gv.dump(after_gs_fit, 'dump/gs_fit_gvar/all_after_gs_fit')
+    # print('\n >>> all after_gs_fit dumped.')
 
     return
 
@@ -459,5 +540,9 @@ if __name__ == '__main__':
     fit_res = gs_fit.main_gvar(data_dic_avg)
     print(fit_res.format(100))
     
+
+    #todo
+    # read_and_fit_gvar_test()
+
 
 # %%
