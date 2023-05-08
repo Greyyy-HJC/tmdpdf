@@ -475,9 +475,9 @@ def read_and_fit_gvar():
                             data_dic[set_id+'_ra_im'] = temp_ra_im[:, 1:tseq]
 
     data_dic_avg = gv.dataset.avg_data(data_dic, bstrap=True)
-    print( '\n>>> global average done. totally {} sets.'.format( (len(data_dic_avg) - 24)/5 ) ) #* should be 780
+    print( '\n>>> global average done. totally {} sets.'.format( (len(data_dic_avg) - 24)/10 ) ) #* should be 780
 
-    # gv.dump(data_dic_avg, 'dump/gs_fit_gvar/all_data_dic_avg')
+    # gv.dump(data_dic_avg, 'dump/gs_fit_gvar/all_data_dic_avg') #* too large to dump
     # print('\n >>> all data_dic_avg dumped.')
 
 
@@ -506,7 +506,10 @@ def read_and_fit_gvar():
                             sub_data_dic_avg['ra_im_tseq_{}'.format(tseq)] = data_dic_avg[set_id+'_ra_im']
 
                         gs_fit = Gs_Fit(two_state_fit(), fit_id='{}{}_P{}_L{}_b{}_z{}_tmax{}_cut{}'.format(mass, gamma, mom, ll, b, z, ra_tmax, tau_cut))
-                        gs_fit.para_set(pt2_tmin=2, pt2_tmax=9, ra_tmin=4, ra_tmax=ra_tmax, tau_cut=tau_cut)
+                        if b == 4 or b == 5: #todo for b=4,5, we cut less to get more statistics
+                            gs_fit.para_set(pt2_tmin=2, pt2_tmax=9, ra_tmin=4, ra_tmax=ra_tmax, tau_cut=0)
+                        else:
+                            gs_fit.para_set(pt2_tmin=2, pt2_tmax=9, ra_tmin=4, ra_tmax=ra_tmax, tau_cut=tau_cut)
 
                         fit_res = gs_fit.main_gvar(sub_data_dic_avg)
                         collect['Q'] = fit_res.Q
@@ -517,9 +520,10 @@ def read_and_fit_gvar():
 
                         after_gs_fit['{}{}_P{}_L{}_b{}_z{}'.format(mass, gamma, mom, ll, b, z)] = collect
 
-    print('\n >>> all gvar fit done.')
 
-    # gv.dump(after_gs_fit, 'dump/gs_fit_gvar/all_after_gs_fit')
+    print( '\n>>> all gvar fits done. totally {} fits.'.format( len(after_gs_fit) ) ) #* should be 780
+
+    # gv.dump(after_gs_fit, 'dump/gs_fit_gvar/all_after_gs_fit_2pt_tmin2_b45_cut0.pkl')
     # print('\n >>> all after_gs_fit dumped.')
 
     return
@@ -546,8 +550,8 @@ def read_and_fit_gvar_test():
                 data_dic['{}{}_P{}_2pt_im'.format(mass, gamma, mom)] = np.imag( temp_2pt )
                 
                 ll = 6
-                for b in trange(1, 2, desc='b loop', leave=False):
-                    for z in trange(2, 3, desc='z loop', leave=False):
+                for b in trange(4, 5, desc='b loop', leave=False):
+                    for z in trange(0, 13, desc='z loop', leave=False):
                         for tseq in range(4, 9):
                             set_id='{}{}_P{}_L{}_b{}_z{}_tseq{}'.format(mass, gamma, mom, ll, b, z, tseq)
 
@@ -556,10 +560,7 @@ def read_and_fit_gvar_test():
                             data_dic[set_id+'_ra_im'] = temp_ra_im[:, 1:tseq]
 
     data_dic_avg = gv.dataset.avg_data(data_dic, bstrap=True)
-    print( '\n>>> global average done. totally {} sets.'.format( (len(data_dic_avg) - 24)/5 ) ) #* should be 780
 
-    # gv.dump(data_dic_avg, 'dump/gs_fit_gvar/all_data_dic_avg')
-    # print('\n >>> all data_dic_avg dumped.')
 
 
 
@@ -571,8 +572,8 @@ def read_and_fit_gvar_test():
         for gamma in tqdm(['t'], desc='gamma loop'):
             for mom in tqdm([8], desc='mom loop'):
                 ll = 6
-                for b in trange(1, 2, desc='b loop', leave=False):
-                    for z in trange(2, 3, desc='z loop', leave=False):
+                for b in trange(4, 5, desc='b loop', leave=False):
+                    for z in trange(10, 11, desc='z loop', leave=False):
                         collect = {}
 
                         #* construct the sub_data_dic_avg for each set
@@ -587,7 +588,7 @@ def read_and_fit_gvar_test():
                             sub_data_dic_avg['ra_im_tseq_{}'.format(tseq)] = data_dic_avg[set_id+'_ra_im']
 
                         gs_fit = Gs_Fit(two_state_fit(), fit_id='{}{}_P{}_L{}_b{}_z{}_tmax{}_cut{}'.format(mass, gamma, mom, ll, b, z, ra_tmax, tau_cut))
-                        gs_fit.para_set(pt2_tmin=3, pt2_tmax=8, ra_tmin=4, ra_tmax=ra_tmax, tau_cut=tau_cut)
+                        gs_fit.para_set(pt2_tmin=2, pt2_tmax=10, ra_tmin=4, ra_tmax=ra_tmax, tau_cut=tau_cut)
 
 
                         #todo
@@ -605,8 +606,6 @@ def read_and_fit_gvar_test():
 
     print('\n >>> all gvar fit done.')
 
-    # gv.dump(after_gs_fit, 'dump/gs_fit_gvar/all_after_gs_fit')
-    # print('\n >>> all after_gs_fit dumped.')
 
     return
 
