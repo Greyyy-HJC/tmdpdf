@@ -67,13 +67,13 @@ do the renormalization, make z dependence plots
 #############################################################
 if True:
     #* read the gs fit result
-    all_after_gs_fit = gv.load('read_from_here/all_after_gs_fit_2pt_tmin2.pkl')
+    all_after_gs_fit = gv.load('read_from_here/all_after_gs_fit_2pt_tmin2_b45_cut0.pkl')
 
     re_dic = {'b1':[], 'b2':[], 'b3':[], 'b4':[], 'b5':[]}
     im_dic = {'b1':[], 'b2':[], 'b3':[], 'b4':[], 'b5':[]}
 
     mass = 220
-    gamma = 'z'
+    gamma = 't'
     mom = 8
     ll = 6
 
