@@ -201,3 +201,8 @@ print([key for key in test])
 print(np.shape( test['total']) )
 
 # %%
+import gvar as gv
+
+test = gv.load('dump/gs_fit_gvar/all_after_gs_fit')
+print([key for key in test])
+# %%

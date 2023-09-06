@@ -50,7 +50,7 @@ if False:
 
 #! gvar fit
 if True:
-    from gs_fit_module import read_and_fit_gvar
+    from gs_fit_module_Lfit import read_and_fit_gvar
     read_and_fit_gvar()
 
 #############################################################
